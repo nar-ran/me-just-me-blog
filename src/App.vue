@@ -1,26 +1,38 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  name: "App",
+  components: {},
+};
 </script>
 
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Jersey+10&display=swap");
+
+:root {
+  --primary-color: #dc3485; /* El verde de Vue, como ejemplo */
+  --secondary-color: #242325; /* Un azul/gris oscuro */
+  --text-color: #f7f7f7;
+
+  --background-color: #242325;
+  --background-color-op50: #242325c3;
+
+  --font-primary: "Jersey 10", cursive;
+}
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  font-family: var(--font-primary);
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+body {
+  background-color: var(--background-color);
+  margin: 0;
 }
 </style>
