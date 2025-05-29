@@ -1,21 +1,23 @@
 <template>
   <header>
-    <a href="/" @click="handleHome"><p class="name-blog">Me, Just Me</p></a>
+    <a href="/"><p class="name-blog">Me, Just Me</p></a>
     <div class="input-container">
       <input type="text" class="buscador" placeholder="Buscar entrada..." />
       <span class="material-symbols-outlined icono-buscador"> search </span>
     </div>
 
     <div class="icons">
-      <a href="/" @click="handleHome"><span class="material-symbols-outlined">home</span></a> 
-      <a href="#" @click="handleLogout"><span class="material-symbols-outlined">chip_extraction</span></a> 
+      <a href="/"><span class="material-symbols-outlined">home</span></a>
+      <a href="#" @click="handleLogout"
+        ><span class="material-symbols-outlined">chip_extraction</span></a
+      >
     </div>
   </header>
-</template> 
+</template>
 
 <script>
-import {useRouter} from 'vue-router';
-import {useAuthStore} from '@/stores/auth';
+import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 
 export default {
   name: "AppHeaderComponent",
@@ -25,14 +27,14 @@ export default {
 
     const handleLogout = () => {
       authStore.logout();
-      router.push('/login');
-    }
+      router.push("/login");
+    };
 
     return {
       authStore,
-      handleLogout
-    }
-  }
+      handleLogout,
+    };
+  },
 };
 </script>
 

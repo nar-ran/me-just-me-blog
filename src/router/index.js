@@ -5,6 +5,7 @@ import HomeView from "@/views/HomeView.vue";
 import LoginView from "@/views/LoginView.vue";
 import PostDeatilView from "@/views/PostDeatilView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
+import CreatePostView from "@/views/CreatePostView.vue";
 
 const routes = [
   {
@@ -25,6 +26,12 @@ const routes = [
     component: PostDeatilView,
     props: true,
     meta: { requiresAuth: true, title: "Detalle del post" },
+  },
+  {
+    path: "/create-post",
+    name: "create-post",
+    component: CreatePostView,
+    meta: { title: "Crear Entrada" },
   },
   {
     path: "/:catchAll(.*)",
