@@ -1,0 +1,43 @@
+[
+  {
+    "id": 1,
+    "name": "Música",
+    "slug": "musica",
+    "description": "Cosas de la musica que se me ocurren o analizo",
+    "postCount": "20"
+  },
+  {
+    "id": 2,
+    "name": "Lover",
+    "slug": "lover",
+    "description": "Mis amores (literalmente)",
+    "postCount": "110"
+  },
+  {
+    "id": 3,
+    "name": "Diseño",
+    "slug": "diseno",
+    "postCount": "32"
+  },
+  {
+    "id": 4,
+    "name": "Tutoriales",
+    "slug": "tutoriales",
+    "description": "Guías paso a paso para principiantes",
+    "postCount": "15"
+  },
+  {
+    "id": 5,
+    "name": "Proyectos",
+    "slug": "proyectos",
+    "description": "Mis experimentos y casos de estudio",
+    "postCount": "7"
+  },
+  {
+    "id": 6,
+    "name": "Off-Topic",
+    "slug": "off-topic",
+    "description": "Reflexiones y contenido casual",
+    "postCount": "3"
+  }
+]

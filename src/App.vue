@@ -1,13 +1,13 @@
 <template>
-  <div>
+<div>
     <router-view></router-view>
-  </div>
+</div>
 </template>
 
 <script>
 export default {
-  name: "App",
-  components: {},
+    name: "App",
+    components: {},
 };
 </script>
 
@@ -15,33 +15,49 @@ export default {
 @import url("https://fonts.googleapis.com/css2?family=Jersey+10&display=swap");
 
 :root {
-  --primary-color: #dc3485; /* El verde de Vue, como ejemplo */
-  --secondary-color: #242325; /* Un azul/gris oscuro */
-  --text-color: #f7f7f7;
+    --primary-color: #dc3485;
+    --secondary-color: #242325;
+    --text-color: #f7f7f7;
 
-  --background-color: #242325;
-  --background-color-op50: #242325c3;
+    --background-color: #242325;
+    --background-color-op50: #242325c3;
 
-  --font-primary: "Jersey 10", cursive;
+    --font-primary: "Jersey 10", cursive;
 }
 
 #app {
-  font-family: var(--font-primary);
-  background-color: var(--background-color);
-  color: var(--text-color);
+    font-family: var(--font-primary);
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 html,
 body,
 #app {
-  height: 100%;
-  margin: 0;
+    height: 100%;
+    margin: 0;
 }
 
 body {
-  background-color: var(--background-color);
+    background-color: var(--background-color);
 
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
+}
+
+::-webkit-scrollbar {
+    width: 0.5em;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--background-color-op50);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg,
+            var(--primary-color) 0%,
+            var(--secondary-color) 100%);
+
+    border-radius: 100px;
 }
 </style>

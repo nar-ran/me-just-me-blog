@@ -1,43 +1,52 @@
 <template>
-  <div class="home-view">
-    <!-- <app-header-component /> -->
-
+<div class="home-view">
     <div class="sections">
-      <sidebar-nav-component />
-      <main-content-component />
+        <sidebar-nav-component class="navbar" />
+        <main-content-component />
     </div>
-  </div>
+</div>
 </template>
 
 <script>
 import SidebarNavComponent from "@/components/SidebarNav/SidebarNavComponent.vue";
-// import AppHeaderComponent from "../components/AppHeaderComponent/AppHeaderComponent.vue";
 import MainContentComponent from "@/components/MainContentArea/MainContentComponent.vue";
 
 export default {
-  components: {
-    // AppHeaderComponent,
-    SidebarNavComponent,
-    MainContentComponent,
-  },
+    components: {
+        SidebarNavComponent,
+        MainContentComponent,
+    },
 };
 </script>
 
 <style scoped>
 .home-view {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
+
 .sections {
-  padding: 2em;
+    padding: 2em;
 
-  display: grid;
-  grid-template-columns: auto 2fr;
-  grid-template-rows: 1fr;
+    display: grid;
+    grid-template-columns: auto 2fr;
+    grid-template-rows: 1fr;
 
-  gap: 2em;
+    box-sizing: border-box;
 
-  height: 100%;
+    gap: 2em;
+
+    height: 100%;
+}
+
+@media (max-width: 980px) {
+  .navbar{
+    display: none;
+  }
+
+  .sections{
+    grid-template-columns: 1fr;
+  }
 }
 </style>

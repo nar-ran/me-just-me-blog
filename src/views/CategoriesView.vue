@@ -1,15 +1,15 @@
 <template>
-    <div>
-        <AppHeaderComponent />
-    </div>
+<div class="container">
+    <AppHeaderComponent />
+</div>
 </template>
+
 <script>
 import AppHeaderComponent from '@/components/AppHeaderComponent/AppHeaderComponent.vue';
 
 export default {
-    components:{
+    components: {
         AppHeaderComponent
     }
-};
+}
 </script>
-<style></style>
