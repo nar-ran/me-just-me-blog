@@ -31,18 +31,17 @@
 
                 <div v-if="latestTrack" class="spotify-track-display">
                     <img :src="latestTrack.album.images[0].url" alt="Carátula del álbum" class="spotify-album-cover">
-                    <div class="spotify-track-details">
-                        <p class="spotify-track-name">{{ latestTrack.name }}</p>
-                        <p class="spotify-track-name">{{ formatDuration(latestTrack.duration_ms)  }}</p>
+                    <div class="spotify-track-info">
+                        <div class="spotify-title-duration-row">
+                            <p class="spotify-track-name">{{ latestTrack.name }}</p>
+                            <p class="spotify-track-duration">{{ formatDuration(latestTrack.duration_ms) }}</p>
+                        </div>
                         <p class="spotify-artist-name">{{ latestTrack.artists[0].name }}</p>
-                        <!-- <a :href="latestTrack.external_urls.spotify" target="_blank" class="spotify-listen-link">
-                            Escuchar en Spotify
-                        </a> -->
                     </div>
                 </div>
 
                 <p v-else-if="accessToken && !latestTrack && !error" class="spotify-loading">Cargando la última canción...</p>
-                <p v-else-if="!accessToken && !error" class="spotify-message">Inicia sesión en Spotify para ver tu última canción.</p>
+                <p v-else-if="!accessToken && !error" class="spotify-message" style="text-align: center;">Inicia sesión en Spotify para ver tu última canción.</p>
                 <p v-if="error" class="spotify-error-message">{{ error }}</p>
             </div>
         </div>
@@ -300,7 +299,7 @@ export default {
 /* bottom container sections */
 .bottom-grid {
     display: grid;
-    grid-template-columns: 1fr 0.7fr;
+    grid-template-columns: 1fr auto;
     gap: 2rem;
 }
 
@@ -358,10 +357,9 @@ export default {
 .music-container {
     display: grid;
     place-items: center;
-    padding: 20px;
     border-radius: 10px;
     font-size: 1.4em;
-    text-align: center;
+    text-align: left;
     height: 100%;
 }
 
@@ -402,7 +400,7 @@ export default {
 
 .spotify-album-cover {
     width: 100%;
-    border-radius: 8px;
+    border-radius: 5px;
     object-fit: cover;
     aspect-ratio: 1 / 1;
 }
@@ -410,7 +408,6 @@ export default {
 .spotify-track-details {
     margin: 0;
     width: 100%;
-    margin-top: 12px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -421,7 +418,6 @@ export default {
     width: 100%;
     display: flex;
     justify-content: space-between;
-    margin-top: 8px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -429,10 +425,66 @@ export default {
 
 .spotify-artist-name {
     margin: 0;
-    margin-top: 4px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.spotify-track-display {
+    border-radius: 10px;
+    padding: 19px;
+    max-width: 200px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--text-color);
+    margin: 0 auto;
+}
+
+.spotify-track-info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+    margin-top: 0;
+}
+
+.spotify-title-duration-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+    gap: 8px;
+    margin-top: 0.3em;
+}
+
+.spotify-track-name {
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+    margin: 0;
+}
+
+.spotify-track-duration {
+    color: var(--text-color);
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin: 0;
+}
+
+.spotify-artist-name {
+    font-size: 0.8em;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    margin: 0;
 }
 
 /* Pantallas pequeñas */
@@ -445,6 +497,42 @@ export default {
     .bottom-grid {
         grid-template-columns: auto;
         gap: 1rem;
+    }
+
+    .spotify-track-display {
+        flex-direction: row;
+        align-items: center;
+        max-width: none;
+        width: 100%;
+        padding: 15px 10px;
+        gap: 12px;
+        border-radius: 10px;
+    }
+
+    .spotify-album-cover {
+        width: 5em;
+        height: 3em;
+        margin-bottom: 0;
+        flex-shrink: 0;
+    }
+
+    .spotify-track-info {
+        flex-grow: 1;
+        width: auto;
+        gap: 2px;
+        padding: 0 5px;
+    }
+
+    .spotify-track-name {
+        font-size: 1.1em;
+    }
+
+    .spotify-track-duration {
+        font-size: 1.1em;
+    }
+
+    .spotify-artist-name {
+        font-size: 0.9em;
     }
 }
 </style>
