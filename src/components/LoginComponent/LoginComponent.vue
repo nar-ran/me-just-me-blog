@@ -8,7 +8,7 @@
           type="text"
           v-model="username"
           name="username"
-          placeholder="Username"
+          placeholder="Username o Email"
           autocomplete="off"
           required
         />
@@ -62,12 +62,16 @@ export default {
       isLoading.value = true;
       loginError.value = "";
 
-      const sucess = await authStore.login(username.value, password.value);
+      if(username.value && password.value){
+        const sucess = await authStore.login(username.value, password.value);
 
-      if (sucess) {
-        router.push("/");
-      } else {
-        loginError.value = "Usuario o contraseña incorrectos.";
+        if (sucess) {
+          router.push("/");
+        } else {
+          loginError.value = "Usuario o contraseña incorrectos.";
+        }
+      }else{
+        loginError.value = "Ingrese el usuario y la contraseña."
       }
 
       isLoading.value = false;

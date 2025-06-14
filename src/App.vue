@@ -5,9 +5,20 @@
 </template>
 
 <script>
+import { onMounted } from 'vue';
+import { useAuthStore } from './stores/auth';
+
 export default {
-    name: "App",
-    components: {},
+    name: 'App',
+    setup() {
+        const authStore = useAuthStore();
+
+        onMounted(async () => {
+            await authStore.checkSession();
+        });
+
+        return {};
+    },
 };
 </script>
 

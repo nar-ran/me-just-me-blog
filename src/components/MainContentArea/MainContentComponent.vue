@@ -41,7 +41,7 @@
                 </div>
 
                 <p v-else-if="accessToken && !latestTrack && !error" class="spotify-loading">Cargando la última canción...</p>
-                <p v-else-if="!accessToken && !error" class="spotify-message" style="text-align: center;">Inicia sesión en Spotify para ver tu última canción.</p>
+                <p v-else-if="!accessToken && !error" class="spotify-message" style="text-align: center; padding: 0 30px;">Inicia sesión en Spotify para ver tu última canción.</p>
                 <p v-if="error" class="spotify-error-message">{{ error }}</p>
             </div>
         </div>

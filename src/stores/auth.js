@@ -1,71 +1,59 @@
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia';
+import { supabase } from './supabase';
 
-export const useAuthStore = defineStore("auth", {
+export const useAuthStore = defineStore('auth', {
   state: () => ({
-    isAuthenticated: localStorage.getItem("isAuthenticated") === "true",
-    user: localStorage.getItem("user")
-      ? JSON.parse(localStorage.getItem("user"))
-      : null,
-    token: null,
+    isAuthenticated: false,
+    user: null,
   }),
 
   actions: {
-    async login(username, password) {
-      if (username.toLowerCase() === "flowernkl" && password == "134340") {
-        this.isAuthenticated = true;
-        this.user = { username: this.username, role: "admin" };
+    async login(identificador, password) {
+      let email = identificador;
+      const username = identificador.trim().toLowerCase();
 
-        localStorage.setItem("isAuthenticated", "true");
-        localStorage.setItem("user", JSON.stringify(this.user));
+      if (!identificador.includes('@')) {
+        const { data, error } = await supabase.rpc(
+          'obtener_email_por_username',
+          { input_username: username }
+        );
 
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        return true;
-      } else {
-        console.error("Login provisional fallido: Credenciales incorrectas.");
+        if (error || !data) {
+          return false;
+        }
+
+        email = data;
+      }
+
+      const { data: sessionData, error: loginError } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+      if (loginError) {
         return false;
       }
 
-      // // Login con el back :D
-      // try {
-      //   const response = await fetch("/api/login", {
-      //     method: "POST",
-      //     headers: { "Content-Type": "application/json" },
-      //     body: JSON.stringify({ username, password }),
-      //   });
+      this.isAuthenticated = true;
+      this.user = sessionData.user;
 
-      //   if (!response.ok) {
-      //     const errorData = await response.json();
-      //     throw new Error(errorData.message || "Error de autenticación");
-      //   }
-
-      //   const data = await response.json();
-      //   this.isAuthenticated = true;
-      //   this.user = data.user;
-
-      //   return true;
-      // } catch (e) {
-      //   console.error("Error al iniciar sesión");
-      //   this.isAuthenticated = false;
-      //   this.user = null;
-      //   return false;
-      // }
+      return true;
     },
 
-    logout() {
+    async logout() {
+      await supabase.auth.signOut();
+
       this.isAuthenticated = false;
       this.user = null;
-      localStorage.removeItem("isAuthenticated");
-      localStorage.removeItem("user");
-
-      // --- Cuando tenga el backend, ESTA LÓGICA REEMPLAZARÁ la provisional ---
-      // await fetch('/api/logout', { method: 'POST' }); // Llamada al backend para invalidar sesión
-      //   this.isAuthenticated = false;
-      //   this.user = null;
-      // Eliminar el token de acceso de memoria
     },
-  },
-  getters: {
-    getIsAuthenticated: (state) => state.isAuthenticated,
-    getUser: (state) => state.user,
+
+    async checkSession() {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        this.isAuthenticated = true;
+        this.user = data.session.user;
+      }
+    },
   },
 });
