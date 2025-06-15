@@ -10,6 +10,7 @@
           name="username"
           placeholder="Username o Email"
           autocomplete="off"
+          @keyup.enter="handleAutenticar"
           required />
       </div>
 
@@ -20,6 +21,7 @@
           name="password"
           placeholder="Password"
           autocomplete="off"
+          @keyup.enter="handleAutenticar"
           required />
       </div>
     </div>

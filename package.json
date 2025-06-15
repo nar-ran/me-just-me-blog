@@ -23,8 +23,9 @@
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-eslint": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
-    "eslint": "^7.32.0",
+    "eslint": "^8.0.0",
     "eslint-plugin-vue": "^8.0.3",
+    "eslint-plugin-prettier": "^5.4.1",
     "prettier": "3.5.3"
   },
   "eslintConfig": {
@@ -34,7 +35,6 @@
     },
     "extends": [
       "plugin:vue/vue3-essential",
-      "plugin:prettier/recommended",
       "eslint:recommended"
     ],
     "parserOptions": {

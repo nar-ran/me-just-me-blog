@@ -6,6 +6,8 @@ import LoginView from '@/views/LoginView.vue';
 import PostDeatilView from '@/views/PostDeatilView.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
 import CreatePostView from '@/views/CreatePostView.vue';
+import CategoriesView from '@/views/CategoriesView.vue';
+import FavoritesView from '@/views/FavoritesView.vue';
 
 const routes = [
   {
@@ -21,7 +23,7 @@ const routes = [
     meta: { title: 'Iniciar Sesión' },
   },
   {
-    path: '/post/:id',
+    path: '/post/:slug',
     name: 'post-detail',
     component: PostDeatilView,
     props: true,
@@ -32,6 +34,19 @@ const routes = [
     name: 'create-post',
     component: CreatePostView,
     meta: { title: 'Crear Entrada' },
+  },
+  {
+    path: '/categories/',
+    name: 'categories',
+    component: CategoriesView,
+    props: true,
+    meta: { requiresAuth: true, title: 'Categorias' },
+  },
+  {
+    path: '/favorites',
+    name: 'favorites',
+    component: FavoritesView,
+    meta: { title: 'Favoritos' },
   },
   {
     path: '/:catchAll(.*)',

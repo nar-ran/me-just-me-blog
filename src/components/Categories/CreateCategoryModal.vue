@@ -1,11 +1,7 @@
 <template>
   <div class="modal-overlay">
     <div class="modal">
-      <span
-        class="close-button material-symbols-outlined"
-        @click="$emit('close')">
-        close
-      </span>
+      <span class="close-button" @click="$emit('close')"> &times; </span>
 
       <div class="create-title" @click="crearCategoria">
         <p>
@@ -15,7 +11,10 @@
           </span>
         </p>
       </div>
-      <input v-model="nombre" placeholder="Generales..." />
+      <input
+        v-model="nombre"
+        placeholder="Generales..."
+        @keyup.enter="crearCategoria" />
 
       <ErrorMessagePopup
         v-if="errorCategoria"
@@ -47,6 +46,11 @@
       };
 
       const crearCategoria = async () => {
+        if (!nombre.value.trim()) {
+          errorCategoria.value = 'Escriba una categoria.';
+          return;
+        }
+
         const nombreValido = nombre.value.trim();
         if (!nombreValido) return;
 

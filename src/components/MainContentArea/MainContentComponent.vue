@@ -3,9 +3,12 @@
     <div class="top-grid">
       <p class="title">Entradas</p>
       <div class="main-posts-container">
-        <div v-for="post in posts" :key="post.id" class="posts-container">
+        <div
+          v-for="post in posts"
+          :key="post.entrada_id"
+          class="posts-container">
           <p class="post-date">D: {{ post.dateFormatted }}</p>
-          <p class="post-title">{{ post.title }}</p>
+          <p class="post-title">{{ post.titulo }}</p>
         </div>
       </div>
     </div>
@@ -18,7 +21,7 @@
             v-for="category in categories"
             :key="category.id"
             class="categories-container">
-            <p class="catogory-name">{{ category.name }}</p>
+            <p class="catogory-name">{{ category.nombre }}</p>
             <p class="category-post-count">{{ category.postCount }}</p>
           </div>
         </a>
@@ -26,21 +29,17 @@
 
       <div class="main-categories-container">
         <div class="music-container">
-          <div class="spotify-center-wrapper"></div>
-          <a
-            v-if="!accessToken"
-            @click="loginWithSpotify"
-            class="btn-spotify-login">
-            <span class="material-symbols-outlined">account_circle</span>
-            Conectar Spotify
-          </a>
-
-          <div v-if="latestTrack" class="spotify-track-display">
+          <div class="spotify-track-display">
             <img
-              :src="latestTrack.album.images[0].url"
+              :src="
+                latestTrack?.album?.images?.[0]?.url ||
+                require('@/assets/img/music_default1.jpg')
+              "
               alt="Carátula del álbum"
               class="spotify-album-cover" />
-            <div class="spotify-track-info">
+
+            <!-- Info si hay canción -->
+            <div class="spotify-track-info" v-if="latestTrack">
               <div class="spotify-title-duration-row">
                 <p class="spotify-track-name">{{ latestTrack.name }}</p>
                 <p class="spotify-track-duration">
@@ -51,20 +50,34 @@
                 {{ latestTrack.artists[0].name }}
               </p>
             </div>
-          </div>
 
-          <p
-            v-else-if="accessToken && !latestTrack && !error"
-            class="spotify-loading">
-            Cargando la última canción...
-          </p>
-          <p
-            v-else-if="!accessToken && !error"
-            class="spotify-message"
-            style="text-align: center; padding: 0 30px">
-            Inicia sesión en Spotify para ver tu última canción.
-          </p>
-          <p v-if="error" class="spotify-error-message">{{ error }}</p>
+            <!-- Mensajes si NO hay canción -->
+            <a
+              v-if="!accessToken"
+              @click="loginWithSpotify"
+              class="btn-spotify-login">
+              <span class="material-symbols-outlined">account_circle</span>
+              Conectar Spotify
+            </a>
+
+            <div class="spotify-track-info" v-else>
+              <p
+                v-if="!accessToken"
+                class="spotify-message"
+                style="text-align: center; padding: 0 30px">
+                Inicia sesión en Spotify para ver tu última canción.
+              </p>
+              <p
+                v-else-if="accessToken && !latestTrack && !error"
+                class="spotify-message"
+                style="text-align: center">
+                No hay canciones en reproducción ni recientes.
+              </p>
+              <p v-else-if="error" class="spotify-error-message">
+                {{ error }}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -73,6 +86,7 @@
 
 <script>
   import axios from 'axios';
+  import { supabase } from '@/stores/supabase';
 
   const CLIENT_ID = process.env.VUE_APP_SPOTIFY_CLIENT_ID;
   const CLIENT_SECRET = process.env.VUE_APP_SPOTIFY_CLIENT_SECRET;
@@ -85,7 +99,6 @@
       return {
         posts: [],
         categories: [],
-        // spotify api
         accessToken: null,
         latestTrack: null,
         error: null,
@@ -94,23 +107,45 @@
       };
     },
     async mounted() {
-      const fetchPosts = fetch('/data/posts.json').then((res) => res.json());
-      const fetchCategories = fetch('/data/categories.json').then((res) =>
-        res.json()
-      );
+      try {
+        // entradas
+        const { data: postsData, error: postsError } = await supabase
+          .from('entradas')
+          .select('entrada_id, titulo, fecha, publicado, slug')
+          .eq('publicado', true);
 
-      Promise.all([fetchPosts, fetchCategories])
-        .then(([postsData, categoriesData]) => {
-          this.posts = postsData.map((post) => ({
-            ...post,
-            dateFormatted: this.dateFormatted(post.date),
-          }));
+        if (postsError) throw postsError;
 
-          this.categories = categoriesData.slice(0, 3);
-        })
-        .catch((err) => {
-          console.error('Error cargando posts: ', err);
+        this.posts = postsData.map((post) => ({
+          ...post,
+          dateFormatted: this.dateFormatted(post.fecha), // si ya tienes esto
+        }));
+
+        // categorias
+        const { data: conteos, error } = await supabase
+          .from('categoria_conteos')
+          .select('*');
+
+        if (error) throw error;
+
+        const { data: categoriasData, error: catError } = await supabase
+          .from('categorias')
+          .select('*');
+
+        if (catError) throw catError;
+
+        this.categories = categoriasData.map((cat) => {
+          const match = conteos.find(
+            (c) => c.categoria_id === cat.categoria_id
+          );
+          return {
+            ...cat,
+            postCount: match?.post_count || 0,
+          };
         });
+      } catch (err) {
+        return;
+      }
 
       const storedToken = localStorage.getItem('spotify_access_token');
 
@@ -253,7 +288,7 @@
       },
       formatDuration(ms) {
         if (typeof ms !== 'number' || ms < 0) {
-          return '0:00'; // O manejar el error como prefieras
+          return '0:00';
         }
 
         const totalSeconds = Math.floor(ms / 1000);
