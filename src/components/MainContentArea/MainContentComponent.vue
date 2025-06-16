@@ -130,7 +130,8 @@
 
         const { data: categoriasData, error: catError } = await supabase
           .from('categorias')
-          .select('*');
+          .select('*')
+          .limit(3);
 
         if (catError) throw catError;
 

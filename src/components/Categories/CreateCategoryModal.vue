@@ -3,7 +3,7 @@
     <div class="modal">
       <span class="close-button" @click="$emit('close')"> &times; </span>
 
-      <div class="create-title" @click="crearCategoria">
+      <div class="create-title" @click="createCategory">
         <p>
           Crear Categoria
           <span class="material-symbols-outlined">
@@ -12,14 +12,19 @@
         </p>
       </div>
       <input
-        v-model="nombre"
+        v-model="name"
         placeholder="Generales..."
-        @keyup.enter="crearCategoria" />
+        @keyup.enter="createCategory" />
 
       <ErrorMessagePopup
-        v-if="errorCategoria"
-        :message="errorCategoria"
-        @close="errorCategoria = ''" />
+        v-if="errorCategory"
+        :message="errorCategory"
+        @close="errorCategory = ''" />
+
+      <AlertMessageModal
+        v-if="infoCategory"
+        :message="infoCategory"
+        @close="infoCategory = ''" />
     </div>
   </div>
 </template>
@@ -28,13 +33,15 @@
   import { ref } from 'vue';
   import { supabase } from '@/stores/supabase';
   import ErrorMessagePopup from '../Utils/ErrorMessagePopup.vue';
+  import AlertMessageModal from '../Utils/AlertMessageModal.vue';
 
   export default {
     name: 'CreateCategoryModal',
-    components: { ErrorMessagePopup },
+    components: { ErrorMessagePopup, AlertMessageModal },
     setup(_, { emit }) {
-      const errorCategoria = ref('');
-      const nombre = ref('');
+      const errorCategory = ref('');
+      const infoCategory = ref('');
+      const name = ref('');
 
       const generarSlug = (texto) => {
         return texto
@@ -45,46 +52,51 @@
           .replace(/-+/g, '-');
       };
 
-      const crearCategoria = async () => {
-        if (!nombre.value.trim()) {
-          errorCategoria.value = 'Escriba una categoria.';
+      const createCategory = async () => {
+        if (!name.value.trim()) {
+          errorCategory.value = 'Escriba una categoria.';
           return;
         }
 
-        const nombreValido = nombre.value.trim();
-        if (!nombreValido) return;
+        const validName = name.value.trim();
+        if (!validName) return;
 
-        const slug = generarSlug(nombreValido);
+        const slug = generarSlug(validName);
 
         // 1. Verificar si ya existe una categoría con ese slug
-        const { data: existentes, error: errorCheck } = await supabase
+        const { data: available, error: errorCheck } = await supabase
           .from('categorias')
           .select('slug')
           .eq('slug', slug);
 
         if (errorCheck) {
-          errorCategoria.value = 'Error al verificar existencia.';
+          errorCategory.value = 'Error al verificar existencia.';
           return;
         }
 
-        if (existentes.length > 0) {
-          errorCategoria.value = 'La categoría ya existe.';
+        if (available.length > 0) {
+          errorCategory.value = 'La categoría ya existe.';
           return;
         }
 
         // 2. Insertar si no existe
         const { error } = await supabase
           .from('categorias')
-          .insert({ nombre: nombreValido, slug });
+          .insert({ nombre: validName, slug });
 
-        if (!error) emit('close');
-        else errorCategoria.value = 'Error al crear categoría.';
+        if (!error) {
+          infoCategory.value = `Se creo la categoria ${validName} correctamente.`;
+          setTimeout(() => emit('close'), 3000);
+        } else {
+          errorCategory.value = 'Error al crear categoría.';
+        }
       };
 
       return {
-        nombre,
-        crearCategoria,
-        errorCategoria,
+        name,
+        createCategory,
+        errorCategory,
+        infoCategory,
       };
     },
   };
