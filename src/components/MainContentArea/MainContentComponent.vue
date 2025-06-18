@@ -485,14 +485,17 @@
   }
 
   /* Cancion estilos */
-
   .spotify-track-display {
-    border-radius: 16px;
-    max-width: 100px;
+    border-radius: 10px;
+    padding: 0 19px;
+    max-width: 200px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    color: var(--text-color);
   }
 
   .spotify-album-cover {
@@ -525,19 +528,9 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  .spotify-track-display {
-    border-radius: 10px;
-    padding: 19px;
-    max-width: 200px;
-    width: 100%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    font-size: 0.8em;
     color: var(--text-color);
-    margin: 0 auto;
+    width: 100%;
   }
 
   .spotify-track-info {
@@ -574,16 +567,6 @@
     margin: 0;
   }
 
-  .spotify-artist-name {
-    font-size: 0.8em;
-    color: var(--text-color);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 100%;
-    margin: 0;
-  }
-
   /* Pantallas pequeñas */
   @media (max-width: 700px) {
     .main-grid-container {
@@ -601,7 +584,7 @@
       align-items: center;
       max-width: none;
       width: 100%;
-      padding: 15px 10px;
+      padding: 0 19px;
       gap: 12px;
       border-radius: 10px;
     }

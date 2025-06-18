@@ -1,19 +1,19 @@
 <template>
   <div class="container">
     <app-header-component />
-    <main-content-component />
+    <CreatePostComponent />
   </div>
 </template>
 
 <script>
 import AppHeaderComponent from "@/components/AppHeaderComponent/AppHeaderComponent.vue";
-import MainContentComponent from "@/components/MainContentArea/MainContentComponent.vue";
+import CreatePostComponent from "@/components/Posts/CreatePostComponent.vue";
 
 export default {
   name: "create-post",
   components: {
     AppHeaderComponent,
-    MainContentComponent
+    CreatePostComponent
   },
 };
 </script>

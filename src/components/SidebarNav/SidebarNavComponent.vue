@@ -115,6 +115,7 @@
     box-sizing: border-box;
 
     padding: 2em;
+    margin: 0;
     border-radius: 15px;
     color: var(--text-color);
 

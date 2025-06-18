@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <router-view></router-view>
-  </div>
+  <router-view></router-view>
 </template>
 
 <script>
@@ -47,13 +45,11 @@
   #app {
     height: 100%;
     margin: 0;
+    padding: 0;
   }
 
   body {
     background-color: var(--background-color);
-
-    margin: 0;
-    padding: 0;
   }
 
   ::-webkit-scrollbar {
