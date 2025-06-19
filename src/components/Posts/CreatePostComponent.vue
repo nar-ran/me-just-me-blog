@@ -40,26 +40,27 @@
     },
     setup() {
       onMounted(() => {
+        const SizeStyle = Quill.import('attributors/style/size');
+        SizeStyle.whitelist = ['12px', '14px', '16px', '18px']; // Tamaños permitidos
+        Quill.register(SizeStyle, true);
+
         const toolbarOptions = [
-          ['bold', 'italic', 'underline', 'strike'], // toggled buttons
-          ['blockquote', 'code-block'],
-          ['link', 'image', 'video', 'formula'],
-
-          [{ header: 1 }, { header: 2 }], // custom button values
-          [{ list: 'ordered' }, { list: 'bullet' }, { list: 'check' }],
-          [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
-          [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
-          [{ direction: 'rtl' }], // text direction
-
-          [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
           [{ header: [1, 2, 3, 4, 5, 6, false] }],
 
-          [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-          [{ font: [] }],
-          [{ align: [] }],
+          ['bold', 'italic', 'underline'],
+          ['link', 'image'],
+          [
+            { align: [] },
+            { list: 'ordered' },
+            { list: 'bullet' },
+            { list: 'check' },
+          ],
 
-          ['clean'], // remove formatting button
+          ['code-block', 'formula', { direction: 'rtl' }],
+
+          ['clean'],
         ];
+
         new Quill('#editor', {
           modules: {
             toolbar: toolbarOptions,
@@ -90,7 +91,7 @@
 
   /* info */
   .info {
-    font-size: 1.5em;
+    font-size: 1.35em;
     grid-template-columns: 1fr 1fr;
     display: grid;
   }
@@ -165,9 +166,9 @@
 
   /* Quill editor */
   .content {
+    padding-bottom: 3em;
     font-family: var(--font-primary);
     font-size: 1.2em;
-
     flex-grow: 1;
     display: flex;
     flex-direction: column;
@@ -175,40 +176,35 @@
 
   #editor.ql-container.ql-snow {
     flex-grow: 1;
-
+    min-height: 0;
     border: none !important;
     border-radius: 0 0 20px 20px;
-
     background: linear-gradient(
       to bottom,
       var(--secondary-color),
       var(--primary-color)
     );
-
     color: var(--text-color);
     font-family: var(--font-primary);
     font-size: 1.2em;
   }
 
-  /* Editor de texto interno */
   #editor .ql-editor {
     flex-grow: 1;
-
+    min-height: 0;
     color: var(--text-color) !important;
     padding: 1em;
     border: none;
+    box-sizing: border-box;
   }
 
-  /* Barra de herramientas */
   .ql-toolbar.ql-snow {
     background: linear-gradient(
       45deg,
       var(--secondary-color) 0%,
       var(--primary-color) 80%
     );
-
     padding: 12px 10px;
-
     border: none !important;
     border-radius: 20px 20px 0 0;
     color: var(--text-color) !important;
@@ -218,16 +214,51 @@
   .ql-toolbar.ql-snow button .ql-fill,
   .ql-toolbar.ql-snow svg {
     stroke: var(--text-color) !important;
-    /* fill: var(--primary-color) !important;  */
   }
 
   .ql-toolbar.ql-snow .ql-picker-label {
     color: var(--text-color) !important;
   }
 
-  button:hover .ql-stroke,
-  .ql-picker-label:hover .ql-stroke {
-    fill: none;
+  .ql-toolbar.ql-snow button,
+  .ql-toolbar.ql-snow .ql-formats button,
+  .ql-toolbar.ql-snow .ql-picker,
+  .ql-toolbar.ql.snow .ql-formats {
+    border: none !important;
+    outline: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .ql-toolbar.ql-snow button:hover .ql-stroke,
+  .ql-toolbar.ql-snow button:hover .ql-fill,
+  .ql-toolbar.ql-snow .ql-picker-label:hover {
     stroke: var(--primary-color) !important;
+    color: var(--primary-color) !important;
+  }
+
+  .ql-toolbar.ql-snow .ql-active .ql-stroke,
+  .ql-toolbar.ql-snow .ql-active .ql-fill,
+  .ql-toolbar.ql-snow .ql-active .ql-picker-label,
+  .ql-toolbar.ql-snow .ql-align .ql-picker-label,
+  .ql-toolbar.ql-snow .ql-active button {
+    color: var(--primary-color) !important;
+    stroke: var(--primary-color) !important;
+  }
+
+  .ql-snow .ql-picker.ql-expanded .ql-picker-options {
+    background-color: var(--secondary-color) !important;
+    border: none;
+    border-radius: 8px;
+  }
+
+  .ql-snow .ql-picker-options .ql-picker-item {
+    color: var(--text-color) !important;
+  }
+
+  .ql-snow .ql-picker-options .ql-picker-item.ql-selected,
+  .ql-snow .ql-picker-options .ql-picker-item:hover {
+    background-color: var(--text-color) !important;
+    color: var(--primary-color) !important;
   }
 </style>
