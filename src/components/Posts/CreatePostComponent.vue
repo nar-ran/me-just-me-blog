@@ -7,61 +7,85 @@
         <span class="material-symbols-rounded"> fiber_manual_record </span>
         <span> Category </span>
       </span>
-      <span class="date"> D: {{ date }} </span>
+      <span class="date">
+        D:
+        <input type="date" class="date-input" v-model="date" />
+      </span>
     </div>
 
     <div class="blog-title">
       <input
         type="text"
         class="title-input"
-        placeholder="Future's gonna be ok..." />
-      <button type="button" class="btn-save">Guardar</button>
+        placeholder="Future's gonna be ok..."
+        v-model="title" />
+      <button type="button" class="btn-save" @click="saveContent">
+        Guardar
+      </button>
     </div>
 
     <div class="content">
       <div id="editor" class="custom-editor"></div>
     </div>
   </div>
+
+  <ErrorMessagePopup v-if="error" :message="error" @close="error = ''" />
+  <AlertMessageModal
+    v-if="infoPost"
+    :message="infoPost"
+    @close="infoPost = ''" />
 </template>
 
 <script>
-  import { onMounted } from 'vue';
+  import { onMounted, ref } from 'vue';
+  import { supabase } from '@/stores/supabase';
+  import ErrorMessagePopup from '../Utils/ErrorMessagePopup.vue';
+  import AlertMessageModal from '../Utils/AlertMessageModal.vue';
+
   import Quill from 'quill';
   import 'quill/dist/quill.core.css';
   import 'quill/dist/quill.snow.css';
+  import DOMPurify from 'dompurify';
 
   export default {
     name: 'CreatePostComponent',
-    components: {},
-    data() {
-      return {
-        date: '29/08/2019',
-      };
-    },
+    components: { ErrorMessagePopup, AlertMessageModal },
     setup() {
-      onMounted(() => {
-        const SizeStyle = Quill.import('attributors/style/size');
-        SizeStyle.whitelist = ['12px', '14px', '16px', '18px']; // Tamaños permitidos
-        Quill.register(SizeStyle, true);
+      const quillEditor = ref(null);
+      const error = ref('');
+      const infoPost = ref('');
+      const title = ref('');
+      const date = ref(new Date().toISOString().split('T')[0]);
 
+      const generarSlug = (texto) => {
+        return texto
+          .toLowerCase()
+          .trim()
+          .replace(/[^\w\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-');
+      };
+
+      onMounted(() => {
         const toolbarOptions = [
           [{ header: [1, 2, 3, 4, 5, 6, false] }],
 
           ['bold', 'italic', 'underline', 'strike'],
-          ['link', 'image'],
+          [{ color: [] }, { background: [] }],
           [
             { align: [] },
             { list: 'ordered' },
             { list: 'bullet' },
             { list: 'check' },
           ],
+          ['link', 'image'],
 
           ['code-block', { direction: 'rtl' }],
 
           ['clean'],
         ];
 
-        new Quill('#editor', {
+        quillEditor.value = new Quill('#editor', {
           modules: {
             toolbar: toolbarOptions,
           },
@@ -69,7 +93,76 @@
         });
       });
 
-      return {};
+      const saveContent = async () => {
+        if (!quillEditor.value || !title.value.trim()) {
+          error.value =
+            'Por favor, completa el título y el contenido antes de guardar';
+          return;
+        }
+
+        let baseSlug = generarSlug(title.value);
+        let finalSlug = baseSlug;
+        let count = 1;
+        let isUnique = false;
+
+        do {
+          const { data: existing, error: checkError } = await supabase
+            .from('entradas')
+            .select('slug')
+            .eq('slug', finalSlug);
+
+          if (checkError) {
+            error.value = 'Error al verificar el slug.';
+            return;
+          }
+
+          if (!existing || existing.length === 0) {
+            isUnique = true;
+          } else {
+            finalSlug = `${baseSlug}-${count}`;
+            count++;
+          }
+        } while (!isUnique);
+
+        const dirtyHTML = quillEditor.value.root.innerHTML;
+        const cleanHTML = DOMPurify.sanitize(dirtyHTML, {
+          USE_PROFILES: { html: true },
+        });
+
+        const { data: userData, error: userError } =
+          await supabase.auth.getUser();
+        if (userError || !userData?.user) {
+          error.value = 'No se pudo obtener el usuario actual.';
+          return;
+        }
+
+        const { error: insertError } = await supabase.from('entradas').insert({
+          usuario_id: userData.user.id,
+          titulo: title.value.trim(),
+          contenido: cleanHTML,
+          fecha: date.value,
+          publicado: true,
+          slug: finalSlug,
+        });
+
+        if (insertError) {
+          error.value = 'Error al crear la entrada.';
+          console.error(insertError);
+        } else {
+          infoPost.value = 'Entrada guardada con éxito.';
+          title.value = '';
+          date.value = new Date().toISOString().split('T')[0];
+          quillEditor.value.root.innerHTML = '';
+        }
+      };
+
+      return {
+        title,
+        date,
+        saveContent,
+        error,
+        infoPost,
+      };
     },
   };
 </script>
@@ -104,6 +197,29 @@
   .date {
     text-align: right;
     cursor: pointer;
+  }
+
+  .date-input {
+    color: var(--text-color);
+    font-family: var(--font-primary);
+    font-size: 1em;
+
+    background: none;
+    border: none;
+  }
+
+  .date-input:hover {
+    cursor: pointer;
+  }
+
+  .date-input:focus {
+    border: none;
+    outline: none;
+  }
+
+  .date-input::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
   }
 
   /* blog-title */
@@ -251,9 +367,6 @@
 
   .ql-toolbar .ql-picker-item.ql-selected {
     color: var(--primary-color) !important;
-    background-color: rgba(
-      var(--primary-color, 59, 130, 246),
-      0.1
-    ) !important;
+    background-color: rgba(var(--primary-color, 59, 130, 246), 0.1) !important;
   }
 </style>
