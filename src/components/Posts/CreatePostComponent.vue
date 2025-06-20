@@ -47,7 +47,7 @@
         const toolbarOptions = [
           [{ header: [1, 2, 3, 4, 5, 6, false] }],
 
-          ['bold', 'italic', 'underline'],
+          ['bold', 'italic', 'underline', 'strike'],
           ['link', 'image'],
           [
             { align: [] },
@@ -56,7 +56,7 @@
             { list: 'check' },
           ],
 
-          ['code-block', 'formula', { direction: 'rtl' }],
+          ['code-block', { direction: 'rtl' }],
 
           ['clean'],
         ];
@@ -181,8 +181,8 @@
     border-radius: 0 0 20px 20px;
     background: linear-gradient(
       to bottom,
-      var(--secondary-color),
-      var(--primary-color)
+      var(--secondary-color) 0%,
+      var(--primary-color) 100%
     );
     color: var(--text-color);
     font-family: var(--font-primary);
@@ -210,55 +210,50 @@
     color: var(--text-color) !important;
   }
 
-  .ql-toolbar.ql-snow button .ql-stroke,
-  .ql-toolbar.ql-snow button .ql-fill,
-  .ql-toolbar.ql-snow svg {
+  .ql-toolbar .ql-stroke {
     stroke: var(--text-color) !important;
   }
 
-  .ql-toolbar.ql-snow .ql-picker-label {
+  .ql-toolbar .ql-fill {
+    fill: var(--text-color) !important;
+  }
+
+  .ql-toolbar .ql-picker-label {
     color: var(--text-color) !important;
   }
 
-  .ql-toolbar.ql-snow button,
-  .ql-toolbar.ql-snow .ql-formats button,
-  .ql-toolbar.ql-snow .ql-picker,
-  .ql-toolbar.ql.snow .ql-formats {
-    border: none !important;
-    outline: none !important;
-    background: transparent !important;
-    box-shadow: none !important;
-  }
-
-  .ql-toolbar.ql-snow button:hover .ql-stroke,
-  .ql-toolbar.ql-snow button:hover .ql-fill,
-  .ql-toolbar.ql-snow .ql-picker-label:hover {
-    stroke: var(--primary-color) !important;
-    color: var(--primary-color) !important;
-  }
-
-  .ql-toolbar.ql-snow .ql-active .ql-stroke,
-  .ql-toolbar.ql-snow .ql-active .ql-fill,
-  .ql-toolbar.ql-snow .ql-active .ql-picker-label,
-  .ql-toolbar.ql-snow .ql-align .ql-picker-label,
-  .ql-toolbar.ql-snow .ql-active button {
-    color: var(--primary-color) !important;
-    stroke: var(--primary-color) !important;
-  }
-
-  .ql-snow .ql-picker.ql-expanded .ql-picker-options {
-    background-color: var(--secondary-color) !important;
-    border: none;
-    border-radius: 8px;
-  }
-
-  .ql-snow .ql-picker-options .ql-picker-item {
+  .ql-toolbar .ql-picker-options {
+    background-color: var(--background-color, #2a2a2a) !important;
     color: var(--text-color) !important;
   }
 
-  .ql-snow .ql-picker-options .ql-picker-item.ql-selected,
-  .ql-snow .ql-picker-options .ql-picker-item:hover {
-    background-color: var(--text-color) !important;
+  .ql-toolbar button:hover .ql-stroke {
+    stroke: var(--primary-color) !important;
+    filter: drop-shadow(0 0 4px var(--primary-color)) !important;
+    transition: all 0.3s ease;
+  }
+
+  .ql-toolbar button:hover .ql-fill {
+    fill: var(--primary-color) !important;
+    filter: drop-shadow(0 0 4px var(--primary-color)) !important;
+    transition: all 0.3s ease;
+  }
+
+  .ql-toolbar .ql-picker-label:hover {
     color: var(--primary-color) !important;
+    text-shadow: 0 0 4px var(--primary-color) !important;
+    transition: all 0.3s ease;
+  }
+
+  .ql-toolbar .ql-picker-item:hover {
+    color: var(--primary-color) !important;
+  }
+
+  .ql-toolbar .ql-picker-item.ql-selected {
+    color: var(--primary-color) !important;
+    background-color: rgba(
+      var(--primary-color, 59, 130, 246),
+      0.1
+    ) !important;
   }
 </style>
