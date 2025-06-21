@@ -62,6 +62,15 @@
       };
 
       const showCategories = async () => {
+        const { data: conteos, conteoError } = await supabase
+          .from('categoria_conteos')
+          .select('*');
+
+        if (conteoError) {
+          errorCategory.value = 'No se pudieron obtener los conteos.';
+          return;
+        }
+
         const { data: categoriesData, error: errorQuery } = await supabase
           .from('categorias')
           .select('categoria_id, nombre');
@@ -69,10 +78,15 @@
         if (errorQuery)
           return (errorCategory.value = 'No se pudo listar las categorias.');
 
-        categories.value = categoriesData.map((cat) => ({
-          ...cat,
-          total: cat.post_categorias?.length ?? 0,
-        }));
+        categories.value = categoriesData.map((cat) => {
+          const conteo = conteos.find(
+            (c) => c.categoria_id === cat.categoria_id
+          );
+          return {
+            ...cat,
+            total: conteo?.post_count ?? 0,
+          };
+        });
       };
 
       onMounted(() => {
