@@ -3,10 +3,17 @@
     <p class="title-section">Crear Entrada</p>
 
     <div class="info">
-      <span class="category">
-        <span class="material-symbols-rounded"> fiber_manual_record </span>
-        <span> Category </span>
-      </span>
+      <div>
+        <span class="category" @click="show = true">
+          <span class="dot"></span>
+          <span> {{ categorySelected.nombre }} </span>
+        </span>
+
+        <SelectCategorieModal
+          @select-category="(category) => (categorySelected = category)"
+          v-if="show"
+          @close="show = false" />
+      </div>
       <span class="date">
         D:
         <input type="date" class="date-input" v-model="date" />
@@ -39,6 +46,8 @@
 <script>
   import { onMounted, ref } from 'vue';
   import { supabase } from '@/stores/supabase';
+
+  import SelectCategorieModal from '../Categories/SelectCategorieModal.vue';
   import ErrorMessagePopup from '../Utils/ErrorMessagePopup.vue';
   import AlertMessageModal from '../Utils/AlertMessageModal.vue';
 
@@ -49,13 +58,16 @@
 
   export default {
     name: 'CreatePostComponent',
-    components: { ErrorMessagePopup, AlertMessageModal },
+    components: { SelectCategorieModal, ErrorMessagePopup, AlertMessageModal },
     setup() {
-      const quillEditor = ref(null);
       const error = ref('');
       const infoPost = ref('');
-      const title = ref('');
+      const show = ref(false);
+
+      const categorySelected = ref({ nombre: 'Categoría' });
       const date = ref(new Date().toISOString().split('T')[0]);
+      const title = ref('');
+      const quillEditor = ref(null);
 
       const generarSlug = (texto) => {
         return texto
@@ -129,6 +141,11 @@
           USE_PROFILES: { html: true },
         });
 
+        if (!categorySelected.value?.categoria_id) {
+          error.value = 'Debes seleccionar una categoría.';
+          return;
+        }
+
         const { data: userData, error: userError } =
           await supabase.auth.getUser();
         if (userError || !userData?.user) {
@@ -136,32 +153,51 @@
           return;
         }
 
-        const { error: insertError } = await supabase.from('entradas').insert({
-          usuario_id: userData.user.id,
-          titulo: title.value.trim(),
-          contenido: cleanHTML,
-          fecha: date.value,
-          publicado: true,
-          slug: finalSlug,
-        });
+        const { data: insertedPost, error: insertError } = await supabase
+          .from('entradas')
+          .insert({
+            usuario_id: userData.user.id,
+            titulo: title.value.trim(),
+            contenido: cleanHTML,
+            fecha: date.value,
+            publicado: true,
+            slug: finalSlug,
+          })
+          .select('entrada_id')
+          .single();
 
         if (insertError) {
           error.value = 'Error al crear la entrada.';
-          console.error(insertError);
-        } else {
-          infoPost.value = 'Entrada guardada con éxito.';
-          title.value = '';
-          date.value = new Date().toISOString().split('T')[0];
-          quillEditor.value.root.innerHTML = '';
+          return;
         }
+
+        const { error: postCatError } = await supabase
+          .from('post_categorias')
+          .insert({
+            post_id: insertedPost.entrada_id,
+            categoria_id: categorySelected.value.categoria_id,
+          });
+
+        if (postCatError) {
+          error.value = 'Error al relacionar la categoría con la entrada.';
+          return;
+        }
+
+        infoPost.value = `La entrada "${title.value}" se creó con éxito.`;
+        title.value = '';
+        date.value = new Date().toISOString().split('T')[0];
+        quillEditor.value.root.innerHTML = '';
+        categorySelected.value = { nombre: 'Categoría' };
       };
 
       return {
         title,
         date,
         saveContent,
+        show,
         error,
         infoPost,
+        categorySelected,
       };
     },
   };
@@ -192,11 +228,34 @@
   .category {
     text-align: left;
     cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+  }
+
+  .category:hover {
+    text-shadow: 0 0 20px var(--text-color);
+  }
+
+  .dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: linear-gradient(
+      145deg,
+      var(--primary-color),
+      var(--secondary-color)
+    );
   }
 
   .date {
     text-align: right;
     cursor: pointer;
+  }
+
+  .date:hover {
+    text-shadow: 0 0 20px var(--text-color);
   }
 
   .date-input {
@@ -210,6 +269,7 @@
 
   .date-input:hover {
     cursor: pointer;
+    text-shadow: 0 0 20px var(--text-color);
   }
 
   .date-input:focus {
@@ -368,5 +428,9 @@
   .ql-toolbar .ql-picker-item.ql-selected {
     color: var(--primary-color) !important;
     background-color: rgba(var(--primary-color, 59, 130, 246), 0.1) !important;
+  }
+
+  #editor .ql-editor {
+    z-index: 9999 !important;
   }
 </style>
