@@ -1,15 +1,18 @@
 <template>
-<div class="container">
+  <div class="container">
     <AppHeaderComponent />
-</div>
+    <ShowAllCategories />
+  </div>
 </template>
 
 <script>
-import AppHeaderComponent from '@/components/AppHeaderComponent/AppHeaderComponent.vue';
+  import AppHeaderComponent from '@/components/AppHeaderComponent/AppHeaderComponent.vue';
+  import ShowAllCategories from '@/components/Categories/ShowAllCategories.vue';
 
-export default {
+  export default {
     components: {
-        AppHeaderComponent
-    }
-}
+      AppHeaderComponent,
+      ShowAllCategories,
+    },
+  };
 </script>
