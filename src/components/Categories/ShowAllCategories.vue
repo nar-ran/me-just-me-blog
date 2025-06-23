@@ -26,7 +26,6 @@
 </template>
 
 <script>
-  import { ref } from 'vue';
   import { supabase } from '@/stores/supabase';
   import ErrorMessagePopup from '../Utils/ErrorMessagePopup.vue';
 
