@@ -33,7 +33,7 @@
           .from('entradas')
           .select('entrada_id, titulo, contenido, fecha')
           .eq('favorito', true)
-          .order('fecha', { ascending: false });
+          .order('actualizado_en', { ascending: false });
 
         if (error) {
           this.error = 'No se pudieron cargar los favoritos';

@@ -112,7 +112,8 @@
         const { data: postsData, error: postsError } = await supabase
           .from('entradas')
           .select('entrada_id, titulo, fecha, publicado, slug')
-          .eq('publicado', true);
+          .eq('publicado', true)
+          .order('actualizado_en', { ascending: false });
 
         if (postsError) throw postsError;
 
