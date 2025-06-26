@@ -4,10 +4,12 @@
 
     <div v-for="post in posts" :key="post.entrada_id" class="post-card">
       <div class="post-header">
-        <strong>{{ post.titulo }}</strong>
+        <span>{{ post.titulo }}</span>
         <span class="post-date">{{ formatDate(post.fecha) }}</span>
       </div>
-      <p class="post-content" v-html="post.contenido"></p>
+      <p class="post-content multiline-ellipsis">
+        {{ getPlainText(post.contenido) }}
+      </p>
     </div>
 
     <ErrorMessagePopup v-if="error" :message="error" @close="error = ''" />
@@ -33,7 +35,7 @@
           .from('entradas')
           .select('entrada_id, titulo, contenido, fecha')
           .eq('favorito', true)
-          .order('actualizado_en', { ascending: false });
+          .order('fecha', { ascending: false });
 
         if (error) {
           this.error = 'No se pudieron cargar los favoritos';
@@ -50,6 +52,11 @@
           day: '2-digit',
         });
       },
+      getPlainText(html) {
+        const tempElem = document.createElement('div');
+        tempElem.innerHTML = html;
+        return tempElem.textContent || tempElem.innerHTML || '';
+      },
     },
     mounted() {
       this.fetchFavorites();
@@ -60,8 +67,8 @@
 <style scoped>
   .container {
     padding: 40px 20px;
-    max-width: 900px;
     margin: 0 auto;
+    width: 100%;
   }
 
   .title-section {
@@ -69,7 +76,7 @@
     text-align: center;
     font-family: var(--font-primary);
     color: var(--text-color);
-    margin-bottom: 30px;
+    margin-bottom: 20px;
   }
 
   .post-card {
@@ -89,28 +96,36 @@
 
   .post-card:hover {
     transform: scale(1.01);
+    cursor: pointer;
   }
 
   .post-header {
     display: flex;
     justify-content: space-between;
-    font-size: 1.1em;
+    font-size: 1.4em;
     margin-bottom: 10px;
-    font-weight: bold;
     color: var(--text-color);
   }
 
   .post-date {
-    font-size: 0.95em;
+    font-size: 0.90em;
     white-space: nowrap;
-    font-weight: bold;
     color: var(--text-color);
   }
 
   .post-content {
     font-size: 0.95em;
-    color: #e2d2e9;
+    color: rgba(247, 247, 247, 0.58);
     white-space: pre-wrap;
-    margin-top: 4px;
+    margin-top: 5px;
+    padding-left: 15px;
+  }
+
+  .multiline-ellipsis {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 </style>
