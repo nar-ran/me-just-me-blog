@@ -433,4 +433,23 @@
   #editor .ql-editor {
     z-index: 9999 !important;
   }
+
+  @media screen and (max-width: 600px) {
+    .blog-title {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .btn-save {
+      width: 100%;
+      padding: 12px 20px;
+      font-size: 1.2em;
+      text-align: center;
+    }
+
+    .title-input {
+      font-size: 1.2em;
+      padding: 12px 16px;
+    }
+  }
 </style>
