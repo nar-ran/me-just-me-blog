@@ -70,12 +70,19 @@
           return;
         }
 
-        this.categories = data.map((cat) => ({
-          categoria_id: cat.categoria_id,
-          nombre: cat.nombre,
-          posts: cat.post_categorias.map((p) => p.entradas).filter(Boolean),
-          total: cat.post_categorias.length,
-        }));
+        this.categories = data.map((cat) => {
+          const postsOrdenados = cat.post_categorias
+            .map((p) => p.entradas)
+            .filter(Boolean)
+            .sort((a, b) => new Date(b.fecha) - new Date(a.fecha)); // orden descendente por fecha
+
+          return {
+            categoria_id: cat.categoria_id,
+            nombre: cat.nombre,
+            posts: postsOrdenados,
+            total: cat.post_categorias.length,
+          };
+        });
       },
     },
     mounted() {

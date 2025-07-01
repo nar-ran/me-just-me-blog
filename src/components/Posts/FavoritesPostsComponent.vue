@@ -110,6 +110,7 @@
   .post-date {
     font-size: 0.90em;
     white-space: nowrap;
+    padding-left: 10px;
     color: var(--text-color);
   }
 
