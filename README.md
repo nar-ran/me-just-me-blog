@@ -1,8 +1,10 @@
 # Me, Just Me - Blog Personal
 
-![Vue.js](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vue.js&logoColor=4FC08D) ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white) ![Pinia](https://img.shields.io/badge/Pinia-FFD600?style=for-the-badge&logo=pinia&logoColor=black) ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Vue.js](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vue.js&logoColor=4FC08D) ![Vue CLI](https://img.shields.io/badge/Vue%20CLI-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white) ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white) ![Pinia](https://img.shields.io/badge/Pinia-FFD600?style=for-the-badge&logo=pinia&logoColor=black)
 
 "Me, Just Me" es una plataforma de blog personal desarrollada con Vue.js 3 (Composition API). Permite a los usuarios autenticarse para crear y gestionar sus propias entradas, organizarlas por categorías y mucho más. El proyecto destaca por su diseño limpio, su interfaz responsiva y una integración con la API de Spotify para mostrar la música que el autor ha escuchado recientemente.
+
+> **Nota Importante:** Este proyecto está concebido como un blog personal para un **único usuario**. El registro de nuevas cuentas no está habilitado desde la interfaz web; el usuario debe ser creado directamente en la base de datos de Supabase.
 
 ## 🚀 Funcionalidades Principales
 
@@ -26,7 +28,7 @@
 - **Framework:** [Vue.js 3](https://vuejs.org/) (Composition API)
 - **Enrutamiento:** [Vue Router](https://router.vuejs.org/)
 - **Gestión de Estado:** [Pinia](https://pinia.vuejs.org/)
-- **Bundler:** [Vite](https://vitejs.dev/)
+- **Bundler:** [Vue CLI](https://cli.vuejs.org/)
 - **Iconos:** [Material Symbols](https://fonts.google.com/icons)
 - **Fuentes:** [Google Fonts](https://fonts.google.com/) (uso de fuentes de libre uso)
 - **Estilos:** CSS3 nativo con variables, Flexbox y Grid Layout.
@@ -41,29 +43,31 @@
 La base de datos en Supabase se organiza en torno a las siguientes tablas principales para gestionar el contenido del blog.
 
 ### Tabla `posts`
-| Columna | Tipo | Descripción |
-| :--- | :--- | :--- |
-| `id` | `uuid` | Identificador único del post (Clave primaria). |
-| `created_at` | `timestampz` | Fecha y hora de creación. |
-| `title` | `text` | Título del post. |
-| `content` | `text` | Contenido del post en formato HTML. |
-| `is_favorite` | `boolean` | `true` si el post está marcado como favorito. |
-| `user_id` | `uuid` | Referencia al usuario que creó el post. |
+
+| Columna       | Tipo         | Descripción                                    |
+| :------------ | :----------- | :--------------------------------------------- |
+| `id`          | `uuid`       | Identificador único del post (Clave primaria). |
+| `created_at`  | `timestampz` | Fecha y hora de creación.                      |
+| `title`       | `text`       | Título del post.                               |
+| `content`     | `text`       | Contenido del post en formato HTML.            |
+| `is_favorite` | `boolean`    | `true` si el post está marcado como favorito.  |
+| `user_id`     | `uuid`       | Referencia al usuario que creó el post.        |
 
 ### Tabla `categories`
-| Columna | Tipo | Descripción |
-| :--- | :--- | :--- |
-| `id` | `uuid` | Identificador único de la categoría (Clave primaria). |
-| `created_at` | `timestampz` | Fecha y hora de creación. |
-| `name` | `text` | Nombre de la categoría. |
-| `user_id` | `uuid` | Referencia al usuario que creó la categoría. |
+
+| Columna      | Tipo         | Descripción                                           |
+| :----------- | :----------- | :---------------------------------------------------- |
+| `id`         | `uuid`       | Identificador único de la categoría (Clave primaria). |
+| `created_at` | `timestampz` | Fecha y hora de creación.                             |
+| `name`       | `text`       | Nombre de la categoría.                               |
+| `user_id`    | `uuid`       | Referencia al usuario que creó la categoría.          |
 
 ### Tabla `post_categories` (Tabla de Unión)
-| Columna | Tipo | Descripción |
-| :--- | :--- | :--- |
-| `post_id` | `uuid` | Referencia a la tabla `posts` (Clave foránea). |
-| `category_id` | `uuid` | Referencia a la tabla `categories` (Clave foránea). |
 
+| Columna       | Tipo   | Descripción                                         |
+| :------------ | :----- | :-------------------------------------------------- |
+| `post_id`     | `uuid` | Referencia a la tabla `posts` (Clave foránea).      |
+| `category_id` | `uuid` | Referencia a la tabla `categories` (Clave foránea). |
 
 ## 🏁 Puesta en Marcha (Desarrollo Local)
 
@@ -83,23 +87,23 @@ Sigue estos pasos para ejecutar el proyecto en tu máquina local.
     ```
 
 3.  **Configurar variables de entorno:**
-    Crea un archivo `.env.local` en la raíz del proyecto y añade las variables necesarias. Necesitarás las credenciales para la API de Spotify y las claves de tu proyecto de Supabase.
+    Crea un archivo `.env` en la raíz del proyecto y añade las variables necesarias. Necesitarás las credenciales para la API de Spotify y las claves de tu proyecto de Supabase.
 
-    ```env
+    ```.env
     # Variables para la API de Spotify
-    VITE_SPOTIFY_CLIENT_ID=tu_client_id
-    VITE_SPOTIFY_CLIENT_SECRET=tu_client_secret
-    VITE_SPOTIFY_REFRESH_TOKEN=tu_refresh_token
+    VUE_APP_SPOTIFY_CLIENT_ID="tu_client_id"
+    VUE_APP_SPOTIFY_CLIENT_SECRET="tu_client_secret"
+    VUE_APP_SPOTIFY_REDIRECT_URI="http://127.0.0.1:8080/"
 
     # Variables para Supabase
-    VITE_SUPABASE_URL=tu_url_de_supabase
-    VITE_SUPABASE_ANON_KEY=tu_anon_key_de_supabase
+    VUE_APP_SUPABASE_PROJECT_URL="tu_url_de_proyecto_supabase"
+    VUE_APP_SUPABASE_ANON_KEY="tu_anon_key_de_supabase"
     ```
 
 4.  **Ejecutar el servidor de desarrollo:**
 
     ```bash
-    npm run dev
+    npm run serve
     ```
 
-5.  Abre tu navegador y visita `http://localhost:5173` (o el puerto que Vite indique).
+5.  Abre tu navegador y visita `http://127.0.0.1:8080`.
