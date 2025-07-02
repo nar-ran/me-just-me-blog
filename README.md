@@ -2,6 +2,10 @@
 
 ![Vue.js](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vue.js&logoColor=4FC08D) ![Vue CLI](https://img.shields.io/badge/Vue%20CLI-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white) ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white) ![Pinia](https://img.shields.io/badge/Pinia-FFD600?style=for-the-badge&logo=pinia&logoColor=black)
 
+## 🌐 Demo en Vivo
+
+**[Puedes ver una demostración en vivo del proyecto aquí](https://me-just-me-blog.vercel.app/)**
+
 "Me, Just Me" es una plataforma de blog personal desarrollada con Vue.js 3 (Composition API). Permite a los usuarios autenticarse para crear y gestionar sus propias entradas, organizarlas por categorías y mucho más. El proyecto destaca por su diseño limpio, su interfaz responsiva y una integración con la API de Spotify para mostrar la música que el autor ha escuchado recientemente.
 
 > **Nota Importante:** Este proyecto está concebido como un blog personal para un **único usuario**. El registro de nuevas cuentas no está habilitado desde la interfaz web; el usuario debe ser creado directamente en la base de datos de Supabase.
