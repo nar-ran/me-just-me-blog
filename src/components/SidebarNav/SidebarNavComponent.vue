@@ -54,23 +54,38 @@
       </a>
     </div>
   </div>
+
+  <ErrorMessagePopup v-if="error" :message="error" @close="error = ''" />
+  <AlertMessageModal
+    v-if="alertConfirm"
+    :message="alertConfirm"
+    @close="alertConfirm = ''" />
 </template>
 
 <script>
-  import { useRouter } from 'vue-router';
-  import { useAuthStore } from '@/stores/auth';
   import { ref } from 'vue';
+  import { useRouter } from 'vue-router';
+  import { supabase } from '@/stores/supabase';
+  import { useAuthStore } from '@/stores/auth';
+
   import CreateCategoryModal from '@/components/Categories/CreateCategoryModal.vue';
+  import ErrorMessagePopup from '../Utils/ErrorMessagePopup.vue';
+  import AlertMessageModal from '../Utils/AlertMessageModal.vue';
 
   export default {
     name: 'SidebarNavComponent',
     components: {
       CreateCategoryModal,
+      ErrorMessagePopup,
+      AlertMessageModal,
     },
     setup() {
       const authStore = useAuthStore();
       const router = useRouter();
       const show = ref(false);
+
+      const error = ref('');
+      const alertConfirm = ref('');
 
       const handleLogout = () => {
         authStore.logout();
@@ -81,6 +96,8 @@
         authStore,
         handleLogout,
         show,
+        error,
+        alertConfirm,
       };
     },
     data() {
@@ -92,18 +109,63 @@
       selectImage() {
         this.$refs.fileInput.click();
       },
-      handleImageUpload(event) {
+      async handleImageUpload(event) {
         const file = event.target.files[0];
-        if (file && file.type.startsWith('image/')) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            this.profileImage = e.target.result;
-          };
-          reader.readAsDataURL(file);
-        } else {
-          alert('Por favor selecciona un archivo de imagen válido.');
+        if (!file || !file.type.startsWith('image/')) {
+          this.error = 'Por favor selecciona un archivo de imagen válido.';
+          return;
         }
+
+        const userId = this.authStore.user.id;
+        const fileExt = file.name.split('.').pop();
+        const filePath = `avatars/${userId}.${fileExt}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('avatars')
+          .upload(filePath, file, { upsert: true });
+
+        if (uploadError) {
+          this.error = 'Error al subir la imagen.';
+          return;
+        }
+
+        const { data: publicUrlData } = supabase.storage
+          .from('avatars')
+          .getPublicUrl(filePath);
+
+        const avatarUrl = publicUrlData.publicUrl;
+
+        // Actualiza la URL del avatar en la tabla usuarios
+        const { error: updateError } = await supabase
+          .from('usuarios')
+          .update({ url_avatar: avatarUrl })
+          .eq('usuario_id', userId);
+
+        if (updateError) {
+          this.error = 'Error al guardar la imagen en tu perfil.';
+          return;
+        }
+
+        this.profileImage = `${avatarUrl}?t=${Date.now()}`;
+        this.alertConfirm = 'Imagen de perfil actualizada correctamente.';
       },
+    },
+    async mounted() {
+      const userId = this.authStore.user.id;
+      const { data, error } = await supabase
+        .from('usuarios')
+        .select('url_avatar')
+        .eq('usuario_id', userId)
+        .single();
+
+      if (error) {
+        this.error = 'Error cargando avatar.';
+        return;
+      }
+
+      if (data?.url_avatar) {
+        this.profileImage = `${data.url_avatar}?t=${Date.now()}`;
+      }
     },
   };
 </script>
