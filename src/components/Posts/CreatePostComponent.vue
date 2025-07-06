@@ -90,7 +90,7 @@
             { list: 'bullet' },
             { list: 'check' },
           ],
-          ['link', 'image'],
+          ['link'],
 
           ['code-block', { direction: 'rtl' }],
 

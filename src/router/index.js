@@ -33,7 +33,7 @@ const routes = [
     path: '/create-post',
     name: 'create-post',
     component: CreatePostView,
-    meta: { title: 'Crear Entrada' },
+    meta: { requiresAuth: true, title: 'Crear Entrada' },
   },
   {
     path: '/categories/',
@@ -46,7 +46,7 @@ const routes = [
     path: '/favorites',
     name: 'favorites',
     component: FavoritesView,
-    meta: { title: 'Favoritos' },
+    meta: { requiresAuth: true, title: 'Favoritos' },
   },
   {
     path: '/:catchAll(.*)',
