@@ -1,18 +1,18 @@
 <template>
-<div class="container">
+  <div class="container">
     <h1>¿Te perdiste?<br />Página no encontrada</h1>
     <a href="/"> Volver al inicio </a>
-</div>
+  </div>
 </template>
 
 <script>
-export default {
-    name: "NotFound",
-};
+  export default {
+    name: 'NotFound',
+  };
 </script>
 
 <style scoped>
-.container {
+  .container {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -21,15 +21,17 @@ export default {
     text-align: center;
 
     color: var(--primary-color);
-}
+  }
 
-h1 {
+  h1 {
     font-weight: normal;
     font-size: 3.5em;
 
-    background: linear-gradient(0deg,
-            var(--secondary-color) 0%,
-            var(--primary-color) 30%);
+    background: linear-gradient(
+      0deg,
+      var(--secondary-color) 0%,
+      var(--primary-color) 30%
+    );
 
     -webkit-background-clip: text;
     background-clip: text;
@@ -38,9 +40,9 @@ h1 {
     width: fit-content;
 
     background-size: 100% 100%;
-}
+  }
 
-a {
+  a {
     text-decoration: none;
     font-size: 1.7em;
     color: var(--text-color);
@@ -48,65 +50,81 @@ a {
     padding: 10px 30px;
     border-radius: 50px;
 
-    background: linear-gradient(45deg,
-            var(--secondary-color),
-            var(--primary-color));
-}
+    background: linear-gradient(
+      45deg,
+      var(--secondary-color),
+      var(--primary-color)
+    );
+  }
 
-a:hover {
+  a:hover {
     transform: scale(1.05);
-}
+  }
 
-/* Patron del fondo */
-.container {
+  /* Patron del fondo */
+  .container {
     /* Múltiples background-image para los corazones dispersos */
-    background-image: url("@/assets/svg/pattern-login.svg"),
-        url("@/assets/svg/pattern-login.svg"),
-        url("@/assets/svg/pattern-login.svg"),
-        url("@/assets/svg/pattern-login.svg"),
-        url("@/assets/svg/pattern-login.svg"),
-        url("@/assets/svg/pattern-login.svg"),
-        url("@/assets/svg/pattern-login.svg"),
-        url("@/assets/svg/pattern-login.svg");
+    background-image:
+      url('@/assets/svg/pattern-login.svg'),
+      url('@/assets/svg/pattern-login.svg'),
+      url('@/assets/svg/pattern-login.svg'),
+      url('@/assets/svg/pattern-login.svg'),
+      url('@/assets/svg/pattern-login.svg'),
+      url('@/assets/svg/pattern-login.svg'),
+      url('@/assets/svg/pattern-login.svg'),
+      url('@/assets/svg/pattern-login.svg');
 
     background-repeat: no-repeat;
 
-    background-position: 0% -5%, 40% -30%, 5% 90%, 79% 23%, 81% 19%, 95% 85%,
-        34% 35%, 50% 85%;
+    background-position:
+      0% -5%,
+      40% -30%,
+      5% 90%,
+      79% 23%,
+      81% 19%,
+      95% 85%,
+      34% 35%,
+      50% 85%;
 
     background-size: 12vw, 20vw, 15vw, 4vw, 10vw, 12vw, 5vw, 7vw;
 
     backdrop-filter: blur(1px);
-}
+  }
 
-.container::before {
-    content: "";
+  .container::before {
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     z-index: 0;
-    /*segunda capa, debajo del form */
     pointer-events: none;
-    /* los eventos atraviesan la capa */
 
-    background-image: url("@/assets/svg/pattern-login.svg"),
-        url("@/assets/svg/pattern-login.svg"),
-        url("@/assets/svg/pattern-login.svg"),
-        url("@/assets/svg/pattern-login.svg"),
-        url("@/assets/svg/pattern-login.svg"),
-        url("@/assets/svg/pattern-login.svg"),
-        url("@/assets/svg/pattern-login.svg"),
-        url("@/assets/svg/pattern-login.svg");
+    background-image:
+      url('@/assets/svg/pattern-login.svg'),
+      url('@/assets/svg/pattern-login.svg'),
+      url('@/assets/svg/pattern-login.svg'),
+      url('@/assets/svg/pattern-login.svg'),
+      url('@/assets/svg/pattern-login.svg'),
+      url('@/assets/svg/pattern-login.svg'),
+      url('@/assets/svg/pattern-login.svg'),
+      url('@/assets/svg/pattern-login.svg');
 
     background-repeat: no-repeat;
 
-    background-position: 0% -5%, 40% -30%, 5% 90%, 79% 23%, 81% 19%, 95% 85%,
-        34% 35%, 50% 85%;
+    background-position:
+      0% -5%,
+      40% -30%,
+      5% 90%,
+      79% 23%,
+      81% 19%,
+      95% 85%,
+      34% 35%,
+      50% 85%;
 
     background-size: 12vw, 20vw, 15vw, 4vw, 10vw, 12vw, 5vw, 7vw;
 
     filter: drop-shadow(0px 0px 10px var(--primary-color));
-}
+  }
 </style>

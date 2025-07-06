@@ -126,7 +126,7 @@
       34% 35%,
       50% 85%;
 
-    background-size: 12vw, 20vw, 5vw, 4vw, 10vw, 12vw, 5vw, 7vw;
+    background-size: 12vw, 20vw, 15vw, 4vw, 10vw, 12vw, 5vw, 7vw;
 
     backdrop-filter: blur(1px);
   }
