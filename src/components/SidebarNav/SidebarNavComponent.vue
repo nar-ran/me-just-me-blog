@@ -1,7 +1,6 @@
 <template>
   <div class="container">
     <div class="image-icon" @click="selectImage">
-      <!-- <img v-if="profileImage" :src="profileImage" ref="profileImage" alt="Imagen de perfil" /> -->
       <img
         class="profile-image"
         :src="profileImage"
@@ -17,7 +16,10 @@
       <span class="icon material-symbols-outlined"> add_photo_alternate </span>
     </div>
 
-    <p class="blog-title">Me, Just Me</p>
+    <div class="container-blog-name">
+      <p class="blog-title">Me, Just Me</p>
+      <p style="font-size: 1.2em; text-align: center">{{ username }}</p>
+    </div>
 
     <hr />
 
@@ -84,9 +86,6 @@
       const router = useRouter();
       const show = ref(false);
 
-      const error = ref('');
-      const alertConfirm = ref('');
-
       const handleLogout = () => {
         authStore.logout();
         router.push('/login');
@@ -96,13 +95,14 @@
         authStore,
         handleLogout,
         show,
-        error,
-        alertConfirm,
       };
     },
     data() {
       return {
         profileImage: require('@/assets/profileImage/obsess.jpg'),
+        username: '',
+        error: '',
+        alertConfirm: '',
       };
     },
     methods: {
@@ -151,20 +151,41 @@
       },
     },
     async mounted() {
-      const userId = this.authStore.user.id;
-      const { data, error } = await supabase
-        .from('usuarios')
-        .select('url_avatar')
-        .eq('usuario_id', userId)
-        .single();
+      try {
+        // 1. Obtener el usuario actual
+        const {
+          data: { user },
+          error: authError,
+        } = await supabase.auth.getUser();
+        if (authError || !user) {
+          throw new Error('No se pudo obtener la sesión del usuario.');
+        }
 
-      if (error) {
-        this.error = 'Error cargando avatar.';
-        return;
-      }
+        // 2. Usar el ID del usuario para obtener el perfil de la tabla 'usuarios'
+        const { data: profileData, error: profileError } = await supabase
+          .from('usuarios')
+          .select('usuario, url_avatar') // Pedimos el username y el avatar
+          .eq('usuario_id', user.id)
+          .single();
 
-      if (data?.url_avatar) {
-        this.profileImage = `${data.url_avatar}?t=${Date.now()}`;
+        // Si hay un error y no es porque el perfil no existe
+        if (profileError && profileError.code !== 'PGRST116') {
+          throw profileError;
+        }
+
+        // 3. Asignar los datos a las variables del componente
+        if (profileData) {
+          this.username = profileData.usuario;
+          if (profileData.url_avatar) {
+            this.profileImage = `${profileData.url_avatar}?t=${Date.now()}`;
+          }
+        } else {
+          // Si no hay perfil en 'usuarios', usamos el email como fallback
+          this.username = user.email.split('@')[0];
+        }
+      } catch (err) {
+        this.error = err.message || 'Error al cargar los datos del perfil.';
+        console.error(err);
       }
     },
   };
@@ -234,7 +255,12 @@
 
   .blog-title {
     font-size: 2em;
+    margin: 0;
     text-align: center;
+  }
+
+  .container-blog-name {
+    margin: 32px 0px;
   }
 
   hr {
