@@ -92,7 +92,7 @@ export default {
 
     .sections {
       display: block;
-      padding-top: 80px;
+      padding: 20px;
       width: 100%; 
     }
   }
