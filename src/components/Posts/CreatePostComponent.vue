@@ -435,6 +435,10 @@
   }
 
   @media screen and (max-width: 600px) {
+    .container {
+      margin: 0 1em;
+    }
+
     .blog-title {
       flex-direction: column;
       align-items: stretch;
@@ -450,6 +454,10 @@
     .title-input {
       font-size: 1.2em;
       padding: 12px 16px;
+    }
+
+    .content {
+      padding-bottom: 1em;
     }
   }
 </style>

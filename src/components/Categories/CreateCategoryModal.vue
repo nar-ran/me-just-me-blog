@@ -186,4 +186,8 @@
   input:focus {
     outline: none;
   }
+
+  @media (max-width: 768px) {
+    .modal { width: 70%; }
+  }
 </style>

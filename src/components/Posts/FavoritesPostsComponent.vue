@@ -129,4 +129,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 0px;
+    }
+  }
 </style>

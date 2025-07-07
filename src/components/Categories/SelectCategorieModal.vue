@@ -196,4 +196,11 @@
       var(--secondary-color)
     );
   }
+
+  @media (max-width: 768px) {
+    .modal {
+      width: 70%;
+      font-size: 0.9em;
+    }
+  }
 </style>
