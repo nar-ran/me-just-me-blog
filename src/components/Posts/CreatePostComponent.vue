@@ -342,7 +342,7 @@
 
   /* Quill editor */
   .content {
-    padding-bottom: 3em;
+    padding-bottom: 2em;
     font-family: var(--font-primary);
     font-size: 1.2em;
     flex-grow: 1;
@@ -432,12 +432,6 @@
 
   #editor .ql-editor {
     z-index: 9999 !important;
-  }
-
-  @media screen and (max-width: 980px) {
-    .content {
-      padding-bottom: 2em;
-    }
   }
 
   @media screen and (max-width: 600px) {
