@@ -434,6 +434,12 @@
     z-index: 9999 !important;
   }
 
+  @media screen and (max-width: 980px) {
+    .content {
+      padding-bottom: 2em;
+    }
+  }
+
   @media screen and (max-width: 600px) {
     .container {
       margin: 0 1em;
