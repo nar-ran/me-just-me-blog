@@ -109,21 +109,27 @@
     },
     async mounted() {
       try {
-        // entradas
-        const { data: postsData, error: postsError } = await supabase
-          .from('entradas')
-          .select('entrada_id, titulo, fecha, publicado, slug')
-          .eq('publicado', true)
-          .order('fecha', { ascending: false });
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
 
-        if (postsError) throw postsError;
+        if (user) {
+          const { data: postsData, error: postsError } = await supabase
+            .from('entradas')
+            .select('entrada_id, titulo, fecha, publicado, slug')
+            .eq('publicado', true)
+            .eq('usuario_id', user.id)
+            .order('fecha', { ascending: false });
 
-        const validPosts = postsData.filter((post) => post && post.slug);
+          if (postsError) throw postsError;
 
-        this.posts = validPosts.map((post) => ({
-          ...post,
-          dateFormatted: this.dateFormatted(post.fecha),
-        }));
+          const validPosts = postsData.filter((post) => post && post.slug);
+
+          this.posts = validPosts.map((post) => ({
+            ...post,
+            dateFormatted: this.dateFormatted(post.fecha),
+          }));
+        }
 
         // categorias
         const { data: conteos, error } = await supabase

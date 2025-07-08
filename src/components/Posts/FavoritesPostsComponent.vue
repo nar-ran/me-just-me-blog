@@ -36,20 +36,27 @@
     },
     methods: {
       async fetchFavorites() {
-        const { data, error } = await supabase
-          .from('entradas')
-          .select('entrada_id, titulo, contenido, fecha, slug')
-          .eq('favorito', true)
-          .order('fecha', { ascending: false });
+        try {
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
 
-        if (error) {
+          if (user) {
+            const { data, error } = await supabase
+              .from('entradas')
+              .select('entrada_id, titulo, contenido, fecha, slug')
+              .eq('favorito', true)
+              .eq('usuario_id', user.id)
+              .order('fecha', { ascending: false });
+
+            if (error) throw error;
+
+            const validPosts = data.filter((post) => post && post.slug);
+            this.posts = validPosts;
+          }
+        } catch (err) {
           this.error = 'No se pudieron cargar los favoritos';
-          return;
         }
-
-        const validPosts = data.filter((post) => post && post.slug);
-
-        this.posts = validPosts;
       },
       formatDate(dateStr) {
         const d = new Date(dateStr);
