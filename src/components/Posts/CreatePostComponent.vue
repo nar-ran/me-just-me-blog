@@ -70,12 +70,16 @@
       const quillEditor = ref(null);
 
       const generarSlug = (texto) => {
-        return texto
+        if (!texto) return '';
+
+        const slug = texto
           .toLowerCase()
           .trim()
           .replace(/[^\w\s-]/g, '')
           .replace(/\s+/g, '-')
           .replace(/-+/g, '-');
+          
+        return slug.replace(/^-+|-+$/g, '');
       };
 
       onMounted(() => {
@@ -113,6 +117,10 @@
         }
 
         let baseSlug = generarSlug(title.value);
+        if (!baseSlug) {
+          baseSlug = `post-${Date.now().toString(36)}`;
+        }
+
         let finalSlug = baseSlug;
         let count = 1;
         let isUnique = false;

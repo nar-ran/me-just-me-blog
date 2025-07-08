@@ -44,12 +44,16 @@
       const name = ref('');
 
       const generarSlug = (texto) => {
-        return texto
+        if (!texto) return '';
+
+        const slug = texto
           .toLowerCase()
           .trim()
           .replace(/[^\w\s-]/g, '')
           .replace(/\s+/g, '-')
           .replace(/-+/g, '-');
+
+        return slug.replace(/^-+|-+$/g, '');
       };
 
       const createCategory = async () => {
@@ -61,7 +65,10 @@
         const validName = name.value.trim();
         if (!validName) return;
 
-        const slug = generarSlug(validName);
+        let slug = generarSlug(validName);
+        if (!slug) {
+          slug = `cat-${Date.now().toString(36)}`;
+        }
 
         // 1. Verificar si ya existe una categoría con ese slug
         const { data: available, error: errorCheck } = await supabase
@@ -188,6 +195,8 @@
   }
 
   @media (max-width: 768px) {
-    .modal { width: 70%; }
+    .modal {
+      width: 70%;
+    }
   }
 </style>
