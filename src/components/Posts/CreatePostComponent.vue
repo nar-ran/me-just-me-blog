@@ -69,7 +69,7 @@
       const title = ref('');
       const quillEditor = ref(null);
 
-      const generarSlug = (texto) => {
+      const generateSlug = (texto) => {
         if (!texto) return '';
 
         const slug = texto
@@ -116,7 +116,7 @@
           return;
         }
 
-        let baseSlug = generarSlug(title.value);
+        let baseSlug = generateSlug(title.value);
         if (!baseSlug) {
           baseSlug = `post-${Date.now().toString(36)}`;
         }

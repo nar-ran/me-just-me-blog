@@ -43,7 +43,7 @@
       const infoCategory = ref('');
       const name = ref('');
 
-      const generarSlug = (texto) => {
+      const generateSlug = (texto) => {
         if (!texto) return '';
 
         const slug = texto
@@ -65,7 +65,7 @@
         const validName = name.value.trim();
         if (!validName) return;
 
-        let slug = generarSlug(validName);
+        let slug = generateSlug(validName);
         if (!slug) {
           slug = `cat-${Date.now().toString(36)}`;
         }
