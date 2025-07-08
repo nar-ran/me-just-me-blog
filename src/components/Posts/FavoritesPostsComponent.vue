@@ -2,16 +2,21 @@
   <div class="container">
     <div class="title-section"><p>Favoritos</p></div>
 
-    <div v-for="post in posts" :key="post.entrada_id" class="post-card">
-      <div class="post-header">
-        <span>{{ post.titulo }}</span>
-        <span class="post-date">{{ formatDate(post.fecha) }}</span>
+    <router-link
+      v-for="post in posts"
+      :key="post.entrada_id"
+      :to="{ name: 'post-detail', params: { slug: post.slug } }"
+      class="post-link">
+      <div class="post-card">
+        <div class="post-header">
+          <span>{{ post.titulo }}</span>
+          <span class="post-date">{{ formatDate(post.fecha) }}</span>
+        </div>
+        <p class="post-content multiline-ellipsis">
+          {{ getPlainText(post.contenido) }}
+        </p>
       </div>
-      <p class="post-content multiline-ellipsis">
-        {{ getPlainText(post.contenido) }}
-      </p>
-    </div>
-
+    </router-link>
     <ErrorMessagePopup v-if="error" :message="error" @close="error = ''" />
   </div>
 </template>
@@ -33,7 +38,7 @@
       async fetchFavorites() {
         const { data, error } = await supabase
           .from('entradas')
-          .select('entrada_id, titulo, contenido, fecha')
+          .select('entrada_id, titulo, contenido, fecha, slug')
           .eq('favorito', true)
           .order('fecha', { ascending: false });
 
@@ -42,7 +47,9 @@
           return;
         }
 
-        this.posts = data;
+        const validPosts = data.filter((post) => post && post.slug);
+
+        this.posts = validPosts;
       },
       formatDate(dateStr) {
         const d = new Date(dateStr);
@@ -96,7 +103,6 @@
 
   .post-card:hover {
     transform: scale(1.01);
-    cursor: pointer;
   }
 
   .post-header {
@@ -108,7 +114,7 @@
   }
 
   .post-date {
-    font-size: 0.90em;
+    font-size: 0.9em;
     white-space: nowrap;
     padding-left: 10px;
     color: var(--text-color);
@@ -128,6 +134,11 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .post-link {
+    text-decoration: none;
+    color: inherit;
   }
 
   @media (max-width: 768px) {

@@ -3,28 +3,29 @@
     <div class="top-grid">
       <p class="title">Entradas</p>
       <div class="main-posts-container">
-        <div
+        <router-link
           v-for="post in posts"
           :key="post.entrada_id"
-          class="posts-container">
+          :to="{ name: 'post-detail', params: { slug: post.slug } }"
+          class="posts-container post-link">
           <p class="post-date">D: {{ post.dateFormatted }}</p>
           <p class="post-title">{{ post.titulo }}</p>
-        </div>
+        </router-link>
       </div>
     </div>
 
     <div class="bottom-grid">
       <div class="main-categories-container">
-        <a href="/categories">
+        <router-link to="/categories" class="categories-link">
           <p class="title">Categorías</p>
           <div
             v-for="category in categories"
             :key="category.id"
             class="categories-container">
-            <p class="catogory-name">{{ category.nombre }}</p>
+            <p class="category-name">{{ category.nombre }}</p>
             <p class="category-post-count">{{ category.postCount }}</p>
           </div>
-        </a>
+        </router-link>
       </div>
 
       <div class="main-categories-container">
@@ -113,13 +114,15 @@
           .from('entradas')
           .select('entrada_id, titulo, fecha, publicado, slug')
           .eq('publicado', true)
-          .order('actualizado_en', { ascending: false });
+          .order('fecha', { ascending: false });
 
         if (postsError) throw postsError;
 
-        this.posts = postsData.map((post) => ({
+        const validPosts = postsData.filter((post) => post && post.slug);
+
+        this.posts = validPosts.map((post) => ({
           ...post,
-          dateFormatted: this.dateFormatted(post.fecha), // si ya tienes esto
+          dateFormatted: this.dateFormatted(post.fecha),
         }));
 
         // categorias
@@ -347,6 +350,11 @@
     font-size: 1.4em;
   }
 
+  .post-link {
+    text-decoration: none;
+    color: inherit;
+  }
+
   .main-posts-container {
     overflow-y: auto;
     padding-top: 12px;
@@ -398,7 +406,7 @@
   }
 
   /* Categories container */
-  .main-categories-container a {
+  .categories-link {
     text-decoration: none;
     color: var(--text-color);
   }
@@ -434,7 +442,7 @@
     grid-template-columns: 1fr 1fr;
 
     margin: 0;
-
+    
     padding: 0em 2em;
     font-size: 1.4em;
   }

@@ -54,7 +54,7 @@ export default {
     display: none;
   }
 
-  @media (max-width: 980px) {
+  @media (max-width: 700px) {
     .sidebar-toggle {
       display: flex;
       justify-content: center;

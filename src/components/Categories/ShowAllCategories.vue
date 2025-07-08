@@ -11,10 +11,16 @@
       </button>
 
       <div v-show="openIndex === i" class="accordion-content">
-        <div v-for="post in cat.posts" :key="post.titulo" class="post-row">
-          <span>|– {{ post.titulo }}</span>
-          <span class="post-date">{{ formatDate(post.fecha) }}</span>
-        </div>
+        <router-link
+          v-for="post in cat.posts"
+          :key="post.slug"
+          :to="{ name: 'post-detail', params: { slug: post.slug } }"
+          class="post-link">
+          <div class="post-row">
+            <span>|– {{ post.titulo }}</span>
+            <span class="post-date">{{ formatDate(post.fecha) }}</span>
+          </div>
+        </router-link>
       </div>
     </div>
   </div>
@@ -60,7 +66,8 @@
           post_categorias (
           entradas:post_id (
               titulo,
-              fecha
+              fecha,
+              slug
           )
           )
       `);
@@ -71,16 +78,16 @@
         }
 
         this.categories = data.map((cat) => {
-          const postsOrdenados = cat.post_categorias
+          const postsValidosYOrdenados = cat.post_categorias
             .map((p) => p.entradas)
-            .filter(Boolean)
-            .sort((a, b) => new Date(b.fecha) - new Date(a.fecha)); // orden descendente por fecha
+            .filter((post) => post && post.slug)
+            .sort((a, b) => new Date(b.fecha) - new Date(a.fecha)); 
 
           return {
             categoria_id: cat.categoria_id,
             nombre: cat.nombre,
-            posts: postsOrdenados,
-            total: cat.post_categorias.length,
+            posts: postsValidosYOrdenados,
+            total: postsValidosYOrdenados.length,
           };
         });
       },
@@ -150,6 +157,11 @@
   .post-row:hover {
     text-shadow: 0 0 8px var(--text-color);
     cursor: pointer;
+  }
+
+  .post-link {
+    text-decoration: none;
+    color: inherit;
   }
 
   .post-date {
