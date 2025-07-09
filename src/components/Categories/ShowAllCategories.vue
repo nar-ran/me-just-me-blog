@@ -1,6 +1,6 @@
 <template>
   <div class="title-section"><p>Categorias</p></div>
-  <div class="accordion">
+  <div v-if="categories.length > 0" class="accordion">
     <div
       v-for="(cat, i) in categories"
       :key="cat.categoria_id"
@@ -23,6 +23,9 @@
         </router-link>
       </div>
     </div>
+  </div>
+  <div v-else class="no-categories-message">
+    <p>Aún no has creado ninguna categoría.</p>
   </div>
 
   <ErrorMessagePopup
@@ -60,36 +63,51 @@
         });
       },
       async fetchCategories() {
-        const { data, error } = await supabase.from('categorias').select(`
-          categoria_id,
-          nombre,
-          post_categorias (
-          entradas:post_id (
-              titulo,
-              fecha,
-              slug
-          )
-          )
-      `);
+        try {
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
 
-        if (error) {
-          this.errorCategory = 'Error al cargar las categorías.';
-          return;
+          if (!user) return;
+
+          const { data, error } = await supabase
+            .from('categorias')
+            .select(
+              `
+            categoria_id,
+            nombre,
+            post_categorias (
+              entradas:post_id (
+                  titulo,
+                  fecha,
+                  slug
+              )
+            )
+          `
+            )
+            .eq('usuario_id', user.id);
+
+          if (error) {
+            this.errorCategory = 'Error al cargar las categorías.';
+            return;
+          }
+
+          this.categories = data.map((cat) => {
+            const postsValidosYOrdenados = cat.post_categorias
+              .map((p) => p.entradas)
+              .filter((post) => post && post.slug)
+              .sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+            return {
+              categoria_id: cat.categoria_id,
+              nombre: cat.nombre,
+              posts: postsValidosYOrdenados,
+              total: postsValidosYOrdenados.length,
+            };
+          });
+        } catch (err) {
+          this.errorCategory = 'Ocurrió un error al obtener las categorías.';
         }
-
-        this.categories = data.map((cat) => {
-          const postsValidosYOrdenados = cat.post_categorias
-            .map((p) => p.entradas)
-            .filter((post) => post && post.slug)
-            .sort((a, b) => new Date(b.fecha) - new Date(a.fecha)); 
-
-          return {
-            categoria_id: cat.categoria_id,
-            nombre: cat.nombre,
-            posts: postsValidosYOrdenados,
-            total: postsValidosYOrdenados.length,
-          };
-        });
       },
     },
     mounted() {
@@ -172,5 +190,13 @@
   .arrow {
     margin-left: 10px;
     font-size: 0.8em;
+  }
+
+  .no-categories-message {
+    text-align: center;
+    font-size: 1.2em;
+    margin-top: 2em;
+    color: var(--text-color);
+    opacity: 0.7;
   }
 </style>

@@ -2,7 +2,7 @@
   <div class="main-grid-container">
     <div class="top-grid">
       <p class="title">Entradas</p>
-      <div class="main-posts-container">
+      <div v-if="posts.length > 0" class="main-posts-container">
         <router-link
           v-for="post in posts"
           :key="post.entrada_id"
@@ -12,20 +12,33 @@
           <p class="post-title">{{ post.titulo }}</p>
         </router-link>
       </div>
+      <div v-else class="no-posts-message">
+        <p>
+          Aún no hay entradas para mostrar. ¡Anímate a crear la primera!
+        </p>
+      </div>
     </div>
 
     <div class="bottom-grid">
       <div class="main-categories-container">
-        <router-link to="/categories" class="categories-link">
+        <component
+          :is="categories.length > 0 ? 'router-link' : 'div'"
+          :to="categories.length > 0 ? '/categories' : null"
+          class="categories-link">
           <p class="title">Categorías</p>
-          <div
-            v-for="category in categories"
-            :key="category.id"
-            class="categories-container">
-            <p class="category-name">{{ category.nombre }}</p>
-            <p class="category-post-count">{{ category.postCount }}</p>
+          <div v-if="categories.length > 0">
+            <div
+              v-for="category in categories"
+              :key="category.id"
+              class="categories-container">
+              <p class="category-name">{{ category.nombre }}</p>
+              <p class="category-post-count">{{ category.postCount }}</p>
+            </div>
           </div>
-        </router-link>
+          <div v-else class="no-categories-message">
+            <p>Aún no has creado categorías.</p>
+          </div>
+        </component>
       </div>
 
       <div class="main-categories-container">
@@ -37,7 +50,8 @@
                 require('@/assets/img/music_default1.jpg')
               "
               alt="Carátula del álbum"
-              class="spotify-album-cover" />
+              class="spotify-album-cover"
+              :class="{ 'default-aspect-ratio': !latestTrack }" />
 
             <!-- Info si hay canción -->
             <div class="spotify-track-info" v-if="latestTrack">
@@ -129,31 +143,32 @@
             ...post,
             dateFormatted: this.dateFormatted(post.fecha),
           }));
+
+          // categorias
+          const { data: conteos, error } = await supabase
+            .from('categoria_conteos')
+            .select('*');
+
+          if (error) throw error;
+
+          const { data: categoriasData, error: catError } = await supabase
+            .from('categorias')
+            .select('*')
+            .eq('usuario_id', user.id)
+            .limit(3);
+
+          if (catError) throw catError;
+
+          this.categories = categoriasData.map((cat) => {
+            const match = conteos.find(
+              (c) => c.categoria_id === cat.categoria_id
+            );
+            return {
+              ...cat,
+              postCount: match?.post_count || 0,
+            };
+          });
         }
-
-        // categorias
-        const { data: conteos, error } = await supabase
-          .from('categoria_conteos')
-          .select('*');
-
-        if (error) throw error;
-
-        const { data: categoriasData, error: catError } = await supabase
-          .from('categorias')
-          .select('*')
-          .limit(3);
-
-        if (catError) throw catError;
-
-        this.categories = categoriasData.map((cat) => {
-          const match = conteos.find(
-            (c) => c.categoria_id === cat.categoria_id
-          );
-          return {
-            ...cat,
-            postCount: match?.post_count || 0,
-          };
-        });
       } catch (err) {
         return;
       }
@@ -263,7 +278,7 @@
             this.latestTrack = recentlyPlayedResponse.data.items[0].track;
           } else {
             this.latestTrack = null;
-            this.error = 'No hay actividad musical reciente en Spotify.';
+            this.error = 'No hay actividad en Spotify.';
           }
         } catch (err) {
           this.latestTrack = null;
@@ -316,7 +331,7 @@
 <style scoped>
   .main-grid-container {
     display: grid;
-    grid-template-rows: 1.4fr 1fr;
+    grid-template-rows: 2fr 1fr;
     box-sizing: border-box;
     gap: 2rem;
     height: 100%;
@@ -382,6 +397,21 @@
 
   .post-title {
     text-align: right;
+  }
+
+  .no-posts-message {
+    text-align: center;
+    font-size: 1.3em;
+    margin-top: 2em;
+
+    opacity: 50%;
+  }
+
+  .no-categories-message {
+    text-align: center;
+    font-size: 1.2em;
+    margin-top: 1em;
+    opacity: 0.7;
   }
 
   /* scrollbar styles */
@@ -482,6 +512,10 @@
     align-items: center;
     height: 100%;
   }
+  
+  .spotify-error-message{
+    margin-bottom: 0;
+  }
 
   .btn-spotify-login {
     border-radius: 50px;
@@ -518,6 +552,10 @@
     border-radius: 5px;
     object-fit: cover;
     aspect-ratio: 1 / 1;
+  }
+
+  .spotify-album-cover.default-aspect-ratio {
+    aspect-ratio: 16 / 9;
   }
 
   .spotify-track-details {

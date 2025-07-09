@@ -2,21 +2,27 @@
   <div class="container">
     <div class="title-section"><p>Favoritos</p></div>
 
-    <router-link
-      v-for="post in posts"
-      :key="post.entrada_id"
-      :to="{ name: 'post-detail', params: { slug: post.slug } }"
-      class="post-link">
-      <div class="post-card">
-        <div class="post-header">
-          <span>{{ post.titulo }}</span>
-          <span class="post-date">{{ formatDate(post.fecha) }}</span>
+    <div v-if="posts.length > 0">
+      <router-link
+        v-for="post in posts"
+        :key="post.entrada_id"
+        :to="{ name: 'post-detail', params: { slug: post.slug } }"
+        class="post-link">
+        <div class="post-card">
+          <div class="post-header">
+            <span>{{ post.titulo }}</span>
+            <span class="post-date">{{ formatDate(post.fecha) }}</span>
+          </div>
+          <p class="post-content multiline-ellipsis">
+            {{ getPlainText(post.contenido) }}
+          </p>
         </div>
-        <p class="post-content multiline-ellipsis">
-          {{ getPlainText(post.contenido) }}
-        </p>
-      </div>
-    </router-link>
+      </router-link>
+    </div>
+    <div v-else class="no-favorites-message">
+      <p>Aún no has añadido ninguna entrada a favoritos.</p>
+    </div>
+
     <ErrorMessagePopup v-if="error" :message="error" @close="error = ''" />
   </div>
 </template>
@@ -146,6 +152,14 @@
   .post-link {
     text-decoration: none;
     color: inherit;
+  }
+
+  .no-favorites-message {
+    text-align: center;
+    font-size: 1.2em;
+    margin-top: 2em;
+    color: var(--text-color);
+    opacity: 0.7;
   }
 
   @media (max-width: 768px) {
