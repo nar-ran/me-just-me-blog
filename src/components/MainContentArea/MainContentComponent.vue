@@ -421,7 +421,7 @@
     --rosa-oscuro-diamente: #dc3485ac;
     --rosa-claro-diamante: #ff70b543;
 
-    padding: 5px 10px;
+    padding: 10px;
     border-radius: 10px;
 
     background-blend-mode: multiply;
@@ -502,7 +502,7 @@
   /* Cancion estilos */
   .spotify-track-display {
     border-radius: 10px;
-    padding: 0 19px;
+    padding: 19px;
     max-width: 200px;
     margin: 0 auto;
     display: flex;
@@ -599,7 +599,7 @@
       align-items: center;
       max-width: none;
       width: 100%;
-      padding: 0 19px;
+      padding: 10px;
       gap: 12px;
       border-radius: 10px;
     }
