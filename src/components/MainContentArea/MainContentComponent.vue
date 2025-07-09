@@ -13,9 +13,7 @@
         </router-link>
       </div>
       <div v-else class="no-posts-message">
-        <p>
-          Aún no hay entradas para mostrar. ¡Anímate a crear la primera!
-        </p>
+        <p>Aún no hay entradas para mostrar. ¡Anímate a crear la primera!</p>
       </div>
     </div>
 
@@ -478,7 +476,7 @@
     grid-template-columns: 1fr 1fr;
 
     margin: 0;
-    
+
     padding: 0em 2em;
     font-size: 1.4em;
   }
@@ -512,8 +510,8 @@
     align-items: center;
     height: 100%;
   }
-  
-  .spotify-error-message{
+
+  .spotify-error-message {
     margin-bottom: 0;
   }
 
@@ -621,7 +619,7 @@
   }
 
   /* Pantallas pequeñas */
-  @media (max-width: 700px) {
+  @media (max-width: 980px) {
     .main-grid-container {
       padding: 1.5em;
       grid-template-rows: auto auto;
@@ -630,6 +628,10 @@
     .bottom-grid {
       grid-template-columns: auto;
       gap: 1rem;
+    }
+
+    .spotify-error-message {
+      margin: 22px 0;
     }
 
     .spotify-track-display {

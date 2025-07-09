@@ -32,6 +32,7 @@
 <script>
   import { ref } from 'vue';
   import { supabase } from '@/stores/supabase';
+  import { useAuthStore } from '@/stores/auth';
   import ErrorMessagePopup from '../Utils/ErrorMessagePopup.vue';
   import AlertMessageModal from '../Utils/AlertMessageModal.vue';
 
@@ -39,6 +40,7 @@
     name: 'CreateCategoryModal',
     components: { ErrorMessagePopup, AlertMessageModal },
     setup(_, { emit }) {
+      const authStore = useAuthStore();
       const errorCategory = ref('');
       const infoCategory = ref('');
       const name = ref('');
@@ -62,6 +64,12 @@
           return;
         }
 
+        const user = authStore.user;
+        if (!user) {
+          errorCategory.value = 'Debes iniciar sesión para crear una categoría.';
+          return;
+        }
+
         const validName = name.value.trim();
         if (!validName) return;
 
@@ -70,26 +78,27 @@
           slug = `cat-${Date.now().toString(36)}`;
         }
 
-        // 1. Verificar si ya existe una categoría con ese slug
+        // 1. Verificar si ya existe una categoría con ese slug para este usuario
         const { data: available, error: errorCheck } = await supabase
           .from('categorias')
           .select('slug')
-          .eq('slug', slug);
+          .eq('slug', slug)
+          .eq('usuario_id', user.id);
 
         if (errorCheck) {
-          errorCategory.value = 'Error al verificar existencia.';
+          errorCategory.value = 'Error al verificar la existencia de la categoría.';
           return;
         }
 
         if (available.length > 0) {
-          errorCategory.value = 'La categoría ya existe.';
+          errorCategory.value = 'Ya tienes una categoría con ese nombre.';
           return;
         }
 
         // 2. Insertar si no existe
         const { error } = await supabase
           .from('categorias')
-          .insert({ nombre: validName, slug });
+          .insert({ nombre: validName, slug, usuario_id: user.id });
 
         if (!error) {
           infoCategory.value = `Se creo la categoria ${validName} correctamente.`;
@@ -120,6 +129,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000; /* Asegura que el modal esté por encima de otros contenidos */
   }
 
   .modal {
