@@ -8,31 +8,35 @@
 
     <div class="sections">
       <div :class="{ 'is-visible': isSidebarVisible }">
-        <sidebar-nav-component class="navbar" />
+        <sidebar-nav-component
+          class="navbar"
+          @openCreateCategory="showCreateCategory = true" />
       </div>
 
       <main-content-component />
     </div>
   </div>
 
-  <div
-    v-if="isSidebarVisible"
-    class="overlay is-visible"
-    @click="toggleSidebar"></div>
+  <CreateCategoryModal
+    v-if="showCreateCategory"
+    @close="showCreateCategory = false" />
 </template>
 
 <script>
   import SidebarNavComponent from '@/components/SidebarNav/SidebarNavComponent.vue';
   import MainContentComponent from '@/components/MainContentArea/MainContentComponent.vue';
+  import CreateCategoryModal from '@/components/Categories/CreateCategoryModal.vue';
 
   export default {
     components: {
       SidebarNavComponent,
       MainContentComponent,
+      CreateCategoryModal,
     },
     data() {
       return {
         isSidebarVisible: false,
+        showCreateCategory: false,
       };
     },
     methods: {
@@ -64,28 +68,18 @@
     height: 100%;
   }
 
-  .sidebar-toggle,
-  .overlay {
+  .sidebar-toggle {
     display: none;
   }
 
   .overlay {
     position: fixed;
     inset: 0;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.5); /* Un poco más oscuro para mejor visibilidad */
     z-index: 900;
-    display: none;
   }
 
   @media (max-width: 700px) {
-    .overlay {
-      display: block;
-    }
-
-    .overlay:not(.is-visible) {
-      display: none;
-    }
-
     .sidebar-toggle {
       display: flex;
       justify-content: center;
@@ -102,22 +96,6 @@
       height: 50px;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    .navbar {
-      position: fixed;
-      left: 0;
-      top: 0;
-      height: 100%;
-      transform: translateX(-100%);
-      transition: transform 0.3s ease-in-out;
-      z-index: 1000;
-      box-shadow: 5px 0px 15px rgba(0, 0, 0, 0.2);
-    }
-
-    .navbar.is-visible {
-      transform: translateX(0);
-      display: block;
     }
 
     .sections {

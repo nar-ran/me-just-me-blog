@@ -31,14 +31,12 @@
         </p>
       </a>
       <div>
-        <p @click="show = true">
+        <p @click="$emit('openCreateCategory')">
           Crear Categoría
-          <span class="material-symbols-outlined">
-            format_list_bulleted_add
-          </span>
+          <span class="material-symbols-outlined"
+            >format_list_bulleted_add</span
+          >
         </p>
-
-        <CreateCategoryModal v-if="show" @close="show = false" />
       </div>
       <a href="/favorites/">
         <p>
@@ -65,26 +63,22 @@
 </template>
 
 <script>
-  import { ref } from 'vue';
   import { useRouter } from 'vue-router';
   import { supabase } from '@/stores/supabase';
   import { useAuthStore } from '@/stores/auth';
 
-  import CreateCategoryModal from '@/components/Categories/CreateCategoryModal.vue';
   import ErrorMessagePopup from '../Utils/ErrorMessagePopup.vue';
   import AlertMessageModal from '../Utils/AlertMessageModal.vue';
 
   export default {
     name: 'SidebarNavComponent',
     components: {
-      CreateCategoryModal,
       ErrorMessagePopup,
       AlertMessageModal,
     },
     setup() {
       const authStore = useAuthStore();
       const router = useRouter();
-      const show = ref(false);
 
       const handleLogout = () => {
         authStore.logout();
@@ -94,7 +88,6 @@
       return {
         authStore,
         handleLogout,
-        show,
       };
     },
     data() {

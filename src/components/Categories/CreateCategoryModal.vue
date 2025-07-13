@@ -129,7 +129,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Asegura que el modal esté por encima de otros contenidos */
+    z-index: 1100; 
   }
 
   .modal {
