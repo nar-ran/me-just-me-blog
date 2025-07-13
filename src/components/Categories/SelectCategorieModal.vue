@@ -62,6 +62,15 @@
       };
 
       const showCategories = async () => {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
+          errorCategory.value = 'Usuario no autenticado.';
+          return;
+        }
+
         const { data: conteos, conteoError } = await supabase
           .from('categoria_conteos')
           .select('*');
@@ -73,7 +82,8 @@
 
         const { data: categoriesData, error: errorQuery } = await supabase
           .from('categorias')
-          .select('categoria_id, nombre');
+          .select('categoria_id, nombre')
+          .eq('usuario_id', user.id);
 
         if (errorQuery)
           return (errorCategory.value = 'No se pudo listar las categorias.');
