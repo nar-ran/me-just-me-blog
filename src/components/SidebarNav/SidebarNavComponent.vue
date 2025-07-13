@@ -304,4 +304,27 @@
   .options a p span {
     justify-self: end;
   }
+
+  @media (max-width: 700px) {
+    .container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 250px;
+      border-radius: 0 15px 0 15px;
+      background: linear-gradient(
+        180deg,
+        var(--primary-color),
+        var(--secondary-color)
+      );
+      transform: translateX(-100%);
+      transition: transform 0.3s ease-in-out;
+      z-index: 1000;
+    }
+
+    .is-visible .container {
+      transform: translateX(0);
+    }
+  }
 </style>

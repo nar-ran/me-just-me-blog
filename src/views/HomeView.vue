@@ -7,28 +7,43 @@
     <div v-if="isSidebarVisible" class="overlay" @click="toggleSidebar"></div>
 
     <div class="sections">
-      <sidebar-nav-component
-        v-show="isSidebarVisible"
-        class="navbar"
-        :class="{ 'is-visible': isSidebarVisible }" />
+      <div :class="{ 'is-visible': isSidebarVisible }">
+        <sidebar-nav-component class="navbar" />
+      </div>
+
       <main-content-component />
     </div>
   </div>
+
+  <div
+    v-if="isSidebarVisible"
+    class="overlay is-visible"
+    @click="toggleSidebar"></div>
 </template>
 
 <script>
-import SidebarNavComponent from "@/components/SidebarNav/SidebarNavComponent.vue";
-import MainContentComponent from "@/components/MainContentArea/MainContentComponent.vue";
+  import SidebarNavComponent from '@/components/SidebarNav/SidebarNavComponent.vue';
+  import MainContentComponent from '@/components/MainContentArea/MainContentComponent.vue';
 
-export default {
+  export default {
     components: {
-        SidebarNavComponent,
-        MainContentComponent,
+      SidebarNavComponent,
+      MainContentComponent,
+    },
+    data() {
+      return {
+        isSidebarVisible: false,
+      };
+    },
+    methods: {
+      toggleSidebar() {
+        this.isSidebarVisible = !this.isSidebarVisible;
+      },
     },
   };
 </script>
 
-<style scoped>
+<style>
   .home-view {
     height: 100vh;
     display: flex;
@@ -54,7 +69,23 @@ export default {
     display: none;
   }
 
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 900;
+    display: none;
+  }
+
   @media (max-width: 700px) {
+    .overlay {
+      display: block;
+    }
+
+    .overlay:not(.is-visible) {
+      display: none;
+    }
+
     .sidebar-toggle {
       display: flex;
       justify-content: center;
@@ -82,18 +113,17 @@ export default {
       transition: transform 0.3s ease-in-out;
       z-index: 1000;
       box-shadow: 5px 0px 15px rgba(0, 0, 0, 0.2);
-      display: none;
     }
 
     .navbar.is-visible {
       transform: translateX(0);
-      display: flex;
+      display: block;
     }
 
     .sections {
       display: block;
       padding: 20px;
-      width: 100%; 
+      width: 100%;
     }
   }
 </style>
