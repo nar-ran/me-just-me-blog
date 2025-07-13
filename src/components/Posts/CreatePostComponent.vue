@@ -78,7 +78,7 @@
           .replace(/[^\w\s-]/g, '')
           .replace(/\s+/g, '-')
           .replace(/-+/g, '-');
-          
+
         return slug.replace(/^-+|-+$/g, '');
       };
 
@@ -440,6 +440,18 @@
 
   #editor .ql-editor {
     z-index: 9999 !important;
+  }
+
+  @media screen and (max-width: 400px) {
+    .info {
+      grid-template-columns: 1fr;
+      font-size: 1.2em;
+    }
+
+    .date {
+      margin-top: 10px;
+      text-align: left;
+    }
   }
 
   @media screen and (max-width: 600px) {
