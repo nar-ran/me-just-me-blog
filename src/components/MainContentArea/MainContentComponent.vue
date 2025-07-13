@@ -639,16 +639,19 @@
       align-items: center;
       max-width: none;
       width: 100%;
-      padding: 10px;
-      gap: 12px;
+      padding: 0;
+      gap: 20px;
       border-radius: 10px;
     }
 
     .spotify-album-cover {
       width: 5em;
-      height: 3em;
+      height: 5em;
       margin-bottom: 0;
+      margin-left: 19px;
       flex-shrink: 0;
+      object-fit: cover;
+      aspect-ratio: 1 / 1;
     }
 
     .spotify-track-info {
