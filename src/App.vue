@@ -47,6 +47,12 @@
     margin: 0;
     padding: 0;
   }
+  
+  html,
+  body {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
 
   body {
     background-color: var(--background-color);

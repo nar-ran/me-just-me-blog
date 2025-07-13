@@ -487,6 +487,9 @@
 
   .category-name {
     text-align: left;
+
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   .category-post-count {
@@ -582,6 +585,9 @@
     font-size: 0.8em;
     color: var(--text-color);
     width: 100%;
+
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   .spotify-track-info {
@@ -609,6 +615,9 @@
     text-overflow: ellipsis;
     flex-grow: 1;
     margin: 0;
+
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   .spotify-track-duration {
@@ -618,15 +627,25 @@
     margin: 0;
   }
 
+  .main-grid-container,
+  .bottom-grid,
+  .spotify-track-display,
+  .categories-link,
+  .categories-container {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
   /* Pantallas pequeñas */
   @media (max-width: 980px) {
     .main-grid-container {
       padding: 1.5em;
+      overflow-x: hidden;
       grid-template-rows: auto auto;
     }
 
     .bottom-grid {
-      grid-template-columns: auto;
+      grid-template-columns: 1fr;
       gap: 1rem;
     }
 
@@ -637,7 +656,7 @@
     .spotify-track-display {
       flex-direction: row;
       align-items: center;
-      max-width: none;
+      max-width: 100%;
       width: 100%;
       padding: 10px;
       gap: 20px;
