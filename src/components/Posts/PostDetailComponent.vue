@@ -15,7 +15,7 @@
         <span v-if="post.usuarios" class="author-name">{{
           post.usuarios.usuario
         }}</span>
-        
+
         <div v-if="categories.length" class="categories-list">
           <span v-for="cat in categories" :key="cat.slug" class="category-tag">
             #{{ cat.nombre }}
@@ -198,5 +198,11 @@
     text-align: center;
     padding: 3em;
     font-size: 1.2em;
+  }
+
+  @media (max-width: 420px) {
+    .post-info {
+      gap: 2em;
+    }
   }
 </style>
