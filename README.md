@@ -48,30 +48,44 @@ La base de datos en Supabase se organiza en torno a las siguientes tablas princi
 
 ### Tabla `posts`
 
-| Columna       | Tipo         | Descripción                                    |
-| :------------ | :----------- | :--------------------------------------------- |
-| `id`          | `uuid`       | Identificador único del post (Clave primaria). |
-| `created_at`  | `timestampz` | Fecha y hora de creación.                      |
-| `title`       | `text`       | Título del post.                               |
-| `content`     | `text`       | Contenido del post en formato HTML.            |
-| `is_favorite` | `boolean`    | `true` si el post está marcado como favorito.  |
-| `user_id`     | `uuid`       | Referencia al usuario que creó el post.        |
+| Columna          | Tipo                     | Descripción                                                                     |
+| :--------------- | :----------------------- | :------------------------------------------------------------------------------ |
+| `usuario_id`     | `uuid`                   | Referencia al usuario que creó la entrada.                                       |
+| `titulo`         | `text`                   | Título de la entrada.                                                           |
+| `contenido`      | `text`                   | Contenido de la entrada en formato HTML.                                        |
+| `entrada_id`     | `uuid`                   | Identificador único de la entrada (Clave primaria).                              |
+| `fecha`          | `timestamp with time zone` | Fecha y hora de publicación.                                                    |
+| `publicado`      | `boolean`                | `true` si la entrada está publicada.                                             |
+| `favorito`       | `boolean`                | `true` si la entrada está marcada como favorita.                                  |
+| `creado_en`      | `timestamp with time zone` | Fecha y hora de creación.                                                         |
+| `actualizado_en` | `timestamp with time zone` | Fecha y hora de la última actualización.                                        |
+| `slug`           | `text`                   | Slug para la URL amigable.                                                       |
 
 ### Tabla `categories`
 
-| Columna      | Tipo         | Descripción                                           |
-| :----------- | :----------- | :---------------------------------------------------- |
-| `id`         | `uuid`       | Identificador único de la categoría (Clave primaria). |
-| `created_at` | `timestampz` | Fecha y hora de creación.                             |
-| `name`       | `text`       | Nombre de la categoría.                               |
-| `user_id`    | `uuid`       | Referencia al usuario que creó la categoría.          |
+| Columna        | Tipo   | Descripción                                                 |
+| :------------- | :----- | :---------------------------------------------------------- |
+| `nombre`       | `text` | Nombre de la categoría.                                     |
+| `slug`         | `text` | Slug para la URL amigable.                                   |
+| `categoria_id` | `uuid` | Identificador único de la categoría (Clave primaria).         |
+| `usuario_id`   | `uuid` | Referencia al usuario que creó la categoría.                  |
 
 ### Tabla `post_categories` (Tabla de Unión)
 
-| Columna       | Tipo   | Descripción                                         |
-| :------------ | :----- | :-------------------------------------------------- |
-| `post_id`     | `uuid` | Referencia a la tabla `posts` (Clave foránea).      |
-| `category_id` | `uuid` | Referencia a la tabla `categories` (Clave foránea). |
+| Columna        | Tipo   | Descripción                                                     |
+| :------------- | :----- | :-------------------------------------------------------------- |
+| `post_id`      | `uuid` | Referencia a la tabla `entradas` (Clave foránea).                 |
+| `categoria_id` | `uuid` | Referencia a la tabla `categorias` (Clave foránea).               |
+
+### Tabla `usuarios`
+
+| Columna      | Tipo   | Descripción                                                 |
+| :----------- | :----- | :---------------------------------------------------------- |
+| `usuario_id` | `uuid` | Identificador único del usuario (Clave primaria y foránea a `auth.users(id)`). |
+| `usuario`    | `text` | Nombre de usuario único (mínimo 3 caracteres).                    |
+| `nombre`     | `text` | Nombre completo del usuario.                                  |
+| `url_avatar` | `text` | URL del avatar del usuario.                                   |
+| `email`      | `text` | Email del usuario.                                            |
 
 ## 🏁 Puesta en Marcha (Desarrollo Local)
 
