@@ -42,11 +42,17 @@
 
 <style scoped>
   header {
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
     padding: 10px 30px;
     gap: 20px;
+
+    background-color: var(--background-color);
   }
 
   a {
