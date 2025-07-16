@@ -125,3 +125,12 @@ Sigue estos pasos para ejecutar el proyecto en tu máquina local.
     ```
 
 5.  Abre tu navegador y visita `http://127.0.0.1:8080`.
+
+---
+
+## ⚙️ Credenciales de Prueba
+
+Dado que el registro de nuevas cuentas no está habilitado desde la interfaz web, puedes usar las siguientes credenciales para acceder y probar las funcionalidades de administración del blog:
+
+**Usuario:** `mandarina@prueba.co` o `Mandarina` 
+**Contraseña:** `mandarina1423`
