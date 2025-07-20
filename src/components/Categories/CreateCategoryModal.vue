@@ -1,6 +1,6 @@
 <template>
-  <div class="modal-overlay">
-    <div class="modal">
+  <div class="modal-overlay" @click="$emit('close')">
+    <div class="modal" @click.stop>
       <span class="close-button" @click="$emit('close')"> &times; </span>
 
       <div class="create-title" @click="createCategory">

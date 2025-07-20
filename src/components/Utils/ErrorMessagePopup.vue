@@ -1,7 +1,7 @@
 <template>
   <transition name="fade-scale">
-    <div v-if="message" class="popup-overlay">
-      <div class="popup-error">
+    <div v-if="message" class="popup-overlay" @click="$emit('close')">
+      <div class="popup-error" @click.stop>
         <div class="popup-content">
           <span class="popup-close" @click="$emit('close')">&times;</span>
           <p class="error-message">
