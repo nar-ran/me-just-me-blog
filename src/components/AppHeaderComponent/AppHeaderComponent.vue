@@ -26,8 +26,13 @@
     setup() {
       const authStore = useAuthStore();
       const router = useRouter();
+      const userId = authStore.user?.id;
 
       const handleLogout = async () => {
+        if (userId) {
+          localStorage.removeItem(`categoryInput-${userId}`);
+        }
+
         await authStore.logout();
         router.push('/login');
       };

@@ -44,8 +44,9 @@
 </template>
 
 <script>
-  import { onMounted, ref } from 'vue';
+  import { onMounted, ref, watch, computed } from 'vue';
   import { supabase } from '@/stores/supabase';
+  import { useAuthStore } from '@/stores/auth';
 
   import SelectCategorieModal from '../Categories/SelectCategorieModal.vue';
   import ErrorMessagePopup from '../Utils/ErrorMessagePopup.vue';
@@ -64,10 +65,42 @@
       const infoPost = ref('');
       const show = ref(false);
 
+      const authStore = useAuthStore();
       const categorySelected = ref({ nombre: 'Categoría' });
       const date = ref(new Date().toISOString().split('T')[0]);
       const title = ref('');
       const quillEditor = ref(null);
+
+      const storageKey = computed(() => {
+        return authStore.user && authStore.user.id
+          ? `postsInput-${authStore.user.id}`
+          : null;
+      });
+
+      watch(title, (newTitle) => {
+        if (storageKey.value) {
+          localStorage.setItem(`${storageKey.value}-title`, newTitle);
+        }
+      });
+
+      watch(
+        categorySelected,
+        (newCategory) => {
+          if (storageKey.value) {
+            localStorage.setItem(
+              `${storageKey.value}-category`,
+              JSON.stringify(newCategory)
+            );
+          }
+        },
+        { deep: true }
+      );
+
+      watch(date, (newDate) => {
+        if (storageKey.value) {
+          localStorage.setItem(`${storageKey.value}-date`, newDate);
+        }
+      });
 
       const generateSlug = (texto) => {
         if (!texto) return '';
@@ -106,6 +139,37 @@
             toolbar: toolbarOptions,
           },
           theme: 'snow',
+        });
+
+        if (storageKey.value) {
+          const savedTitle = localStorage.getItem(`${storageKey.value}-title`);
+          if (savedTitle) title.value = savedTitle;
+
+          const savedCategory = localStorage.getItem(
+            `${storageKey.value}-category`
+          );
+          if (savedCategory) {
+            categorySelected.value = JSON.parse(savedCategory);
+          }
+
+          const savedDate = localStorage.getItem(`${storageKey.value}-date`);
+          if (savedDate) date.value = savedDate;
+
+          const savedContent = localStorage.getItem(
+            `${storageKey.value}-content`
+          );
+          if (savedContent) {
+            quillEditor.value.root.innerHTML = savedContent;
+          }
+        }
+
+        quillEditor.value.on('text-change', () => {
+          if (storageKey.value) {
+            localStorage.setItem(
+              `${storageKey.value}-content`,
+              quillEditor.value.root.innerHTML
+            );
+          }
         });
       });
 
@@ -192,6 +256,14 @@
         }
 
         infoPost.value = `La entrada "${title.value}" se creó con éxito.`;
+
+        if (storageKey.value) {
+          localStorage.removeItem(`${storageKey.value}-title`);
+          localStorage.removeItem(`${storageKey.value}-category`);
+          localStorage.removeItem(`${storageKey.value}-date`);
+          localStorage.removeItem(`${storageKey.value}-content`);
+        }
+
         title.value = '';
         date.value = new Date().toISOString().split('T')[0];
         quillEditor.value.root.innerHTML = '';
@@ -206,6 +278,7 @@
         error,
         infoPost,
         categorySelected,
+        authStore,
       };
     },
   };

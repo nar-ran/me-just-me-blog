@@ -79,8 +79,13 @@
     setup() {
       const authStore = useAuthStore();
       const router = useRouter();
+      const userId = authStore.user?.id;
 
       const handleLogout = () => {
+        if (userId) {
+          localStorage.removeItem(`categoryInput-${userId}`);
+        }
+
         authStore.logout();
         router.push('/login');
       };

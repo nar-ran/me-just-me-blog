@@ -30,7 +30,7 @@
 </template>
 
 <script>
-  import { ref } from 'vue';
+  import { onMounted, ref, watch, computed } from 'vue';
   import { supabase } from '@/stores/supabase';
   import { useAuthStore } from '@/stores/auth';
   import ErrorMessagePopup from '../Utils/ErrorMessagePopup.vue';
@@ -44,6 +44,25 @@
       const errorCategory = ref('');
       const infoCategory = ref('');
       const name = ref('');
+
+      const storageKey = computed(() => {
+        return authStore.user && authStore.user.id
+          ? `categoryInput-${authStore.user.id}`
+          : null;
+      });
+
+      onMounted(() => {
+        if (storageKey.value) {
+          const saved = localStorage.getItem(storageKey.value);
+          if (saved) name.value = saved;
+        }
+      });
+
+      watch(name, (newValue) => {
+        if (storageKey.value) {
+          localStorage.setItem(storageKey.value, newValue);
+        }
+      });
 
       const generateSlug = (texto) => {
         if (!texto) return '';
@@ -65,8 +84,10 @@
         }
 
         const user = authStore.user;
+
         if (!user) {
-          errorCategory.value = 'Debes iniciar sesión para crear una categoría.';
+          errorCategory.value =
+            'Debes iniciar sesión para crear una categoría.';
           return;
         }
 
@@ -86,7 +107,8 @@
           .eq('usuario_id', user.id);
 
         if (errorCheck) {
-          errorCategory.value = 'Error al verificar la existencia de la categoría.';
+          errorCategory.value =
+            'Error al verificar la existencia de la categoría.';
           return;
         }
 
@@ -101,7 +123,11 @@
           .insert({ nombre: validName, slug, usuario_id: user.id });
 
         if (!error) {
-          infoCategory.value = `Se creo la categoria ${validName} correctamente.`;
+          infoCategory.value = `Se creo la categoria '${validName}' correctamente.`;
+
+          localStorage.removeItem(storageKey.value);
+          name.value = '';
+
           setTimeout(() => emit('close'), 3000);
         } else {
           errorCategory.value = 'Error al crear categoría.';
@@ -129,7 +155,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1100; 
+    z-index: 1100;
   }
 
   .modal {
