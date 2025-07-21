@@ -125,3 +125,13 @@ Sigue estos pasos para ejecutar el proyecto en tu máquina local.
     ```
 
 5.  Abre tu navegador y visita `http://127.0.0.1:8080`.
+
+
+
+## ⚙️ Credenciales de Prueba para la Demo
+
+Estas credenciales son de solo prueba y están restringidas exclusivamente al entorno demo. No tienen acceso a datos privados ni permiten cambios destructivos.
+
+**Usuario:** mandarina@prueba.co  
+**Contraseña:** mandarina1423
+
