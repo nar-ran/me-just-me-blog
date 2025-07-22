@@ -11,8 +11,18 @@
         <div class="post-card">
           <div class="post-header">
             <span>{{ post.titulo }}</span>
-            <span class="post-date">{{ formatDate(post.fecha) }}</span>
+
+            <span class="right-info">
+              <span class="post-date">{{ formatDate(post.fecha) }}</span>
+
+              <span
+                class="material-symbols-outlined favorite-icon"
+                @click.stop.prevent="removeFavorite(post.entrada_id)">
+                favorite
+              </span>
+            </span>
           </div>
+
           <p class="post-content multiline-ellipsis">
             {{ getPlainText(post.contenido) }}
           </p>
@@ -77,6 +87,20 @@
         tempElem.innerHTML = html;
         return tempElem.textContent || tempElem.innerHTML || '';
       },
+      async removeFavorite(idPost) {
+        try {
+          const { error } = await supabase
+            .from('entradas')
+            .update({ favorito: false })
+            .eq('entrada_id', idPost);
+
+          if (error) throw error;
+
+          this.posts = this.posts.filter((post) => post.entrada_id !== idPost);
+        } catch (err) {
+          this.error = 'No se pudo quitar de favoritos.';
+        }
+      },
     },
     mounted() {
       this.fetchFavorites();
@@ -126,11 +150,29 @@
     color: var(--text-color);
   }
 
+  .right-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
   .post-date {
     font-size: 0.9em;
     white-space: nowrap;
     padding-left: 10px;
     color: var(--text-color);
+  }
+
+  .favorite-icon {
+    font-size: 0.9em;
+    font-variation-settings: 'FILL' 1;
+    cursor: pointer;
+    vertical-align: middle;
+  }
+
+  .favorite-icon:hover {
+    font-variation-settings: 'FILL' 0;
+    text-shadow: 0 0 10px var(--text-color);
   }
 
   .post-content {
