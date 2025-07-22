@@ -173,6 +173,11 @@
   .favorite-icon:hover {
     font-variation-settings: 'FILL' 0;
     text-shadow: 0 0 10px var(--text-color);
+
+    transform: scale(1.2);
+    transition:
+      color 0.2s,
+      transform 0.2s;
   }
 
   .post-content {
