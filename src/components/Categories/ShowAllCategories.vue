@@ -17,7 +17,21 @@
           :to="{ name: 'post-detail', params: { slug: post.slug } }"
           class="post-link">
           <div class="post-row">
-            <span>|– {{ post.titulo }}</span>
+            <span class="left-info">
+              <span
+                class="material-symbols-outlined favorite-icon"
+                :style="{
+                  fontVariationSettings: post.hover
+                    ? (post.favorito ? `'FILL' 0` : `'FILL' 1`)
+                    : (post.favorito ? `'FILL' 1` : `'FILL' 0`),
+                }"
+                @mouseenter="post.hover = true"
+                @mouseleave="post.hover = false"
+                @click.stop.prevent="toogleFavorite(post)">
+                favorite
+              </span>
+              <span>|– {{ post.titulo }}</span>
+            </span>
             <span class="post-date">{{ formatDate(post.fecha) }}</span>
           </div>
         </router-link>
@@ -80,6 +94,7 @@
               entradas:post_id (
                   titulo,
                   fecha,
+                  favorito,
                   slug
               )
             )
@@ -94,7 +109,11 @@
 
           this.categories = data.map((cat) => {
             const postsValidosYOrdenados = cat.post_categorias
-              .map((p) => p.entradas)
+              .map((p) => ({
+                ...p.entradas,
+                favorito: p.entradas.favorito,
+                hover: false,
+              }))
               .filter((post) => post && post.slug)
               .sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
 
@@ -109,6 +128,20 @@
           this.errorCategory = 'Ocurrió un error al obtener las categorías.';
         }
       },
+      async toogleFavorite(post) {
+        try {
+          const { error } = await supabase
+            .from('entradas')
+            .update({ favorito: !post.favorito })
+            .eq('slug', post.slug);
+
+          if (error) throw error;
+
+          post.favorito = !post.favorito;
+        } catch (err) {
+          this.errorCategory = 'No se pudo actualizar el favorito.';
+        }
+      },
     },
     mounted() {
       this.fetchCategories();
@@ -120,6 +153,14 @@
   .title-section {
     font-size: 2em;
     text-align: center;
+  }
+
+  .no-categories-message {
+    text-align: center;
+    font-size: 1.2em;
+    margin-top: 2em;
+    color: var(--text-color);
+    opacity: 0.7;
   }
 
   .accordion {
@@ -164,6 +205,16 @@
     padding: 12px 20px;
   }
 
+  .arrow {
+    margin-left: 10px;
+    font-size: 0.8em;
+  }
+
+  .post-link {
+    text-decoration: none;
+    color: inherit;
+  }
+
   .post-row {
     display: flex;
     justify-content: space-between;
@@ -177,26 +228,29 @@
     cursor: pointer;
   }
 
-  .post-link {
-    text-decoration: none;
-    color: inherit;
+  .left-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .favorite-icon {
+    font-size: 0.9em;
+    cursor: pointer;
+    vertical-align: middle;
+  }
+
+  .favorite-icon:hover {
+    text-shadow: 0 0 10px var(--text-color);
+
+    transform: scale(1.2);
+    transition:
+      color 0.2s,
+      transform 0.2s;
   }
 
   .post-date {
     color: var(--text-color);
     font-family: var(--font-primary);
-  }
-
-  .arrow {
-    margin-left: 10px;
-    font-size: 0.8em;
-  }
-
-  .no-categories-message {
-    text-align: center;
-    font-size: 1.2em;
-    margin-top: 2em;
-    color: var(--text-color);
-    opacity: 0.7;
   }
 </style>
