@@ -8,6 +8,7 @@ import NotFoundView from '@/views/NotFoundView.vue';
 import CreatePostView from '@/views/CreatePostView.vue';
 import CategoriesView from '@/views/CategoriesView.vue';
 import FavoritesView from '@/views/FavoritesView.vue';
+import SearchView from '@/views/SearchView.vue';
 
 const routes = [
   {
@@ -47,6 +48,13 @@ const routes = [
     name: 'favorites',
     component: FavoritesView,
     meta: { requiresAuth: true, title: 'Favoritos' },
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: SearchView,
+    props: (route) => ({ query: route.query.q || '' }),
+    meta: { requiresAuth: true, title: 'Resultados de búsqueda' },
   },
   {
     path: '/:catchAll(.*)',

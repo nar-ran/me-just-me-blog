@@ -1,6 +1,6 @@
 <template>
+  <AppHeaderComponent />
   <div class="container">
-    <AppHeaderComponent />
     <FavoritesPostsComponent />
   </div>
 </template>

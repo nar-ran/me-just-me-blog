@@ -21,6 +21,7 @@
       <p style="font-size: 1.2em; text-align: center">{{ username }}</p>
     </div>
 
+    <SearchbarComponent />
     <hr />
 
     <div class="options">
@@ -67,12 +68,14 @@
   import { supabase } from '@/stores/supabase';
   import { useAuthStore } from '@/stores/auth';
 
+  import SearchbarComponent from '../AppHeaderComponent/SearchbarComponent.vue';
   import ErrorMessagePopup from '../Utils/ErrorMessagePopup.vue';
   import AlertMessageModal from '../Utils/AlertMessageModal.vue';
 
   export default {
     name: 'SidebarNavComponent',
     components: {
+      SearchbarComponent,
       ErrorMessagePopup,
       AlertMessageModal,
     },
@@ -133,7 +136,6 @@
 
         const avatarUrl = publicUrlData.publicUrl;
 
-        // Actualiza la URL del avatar en la tabla usuarios
         const { error: updateError } = await supabase
           .from('usuarios')
           .update({ url_avatar: avatarUrl })
@@ -166,7 +168,6 @@
           .eq('usuario_id', user.id)
           .single();
 
-        // Si hay un error y no es porque el perfil no existe
         if (profileError && profileError.code !== 'PGRST116') {
           throw profileError;
         }
@@ -178,12 +179,10 @@
             this.profileImage = `${profileData.url_avatar}?t=${Date.now()}`;
           }
         } else {
-          // Si no hay perfil en 'usuarios', usamos el email como fallback
           this.username = user.email.split('@')[0];
         }
       } catch (err) {
         this.error = err.message || 'Error al cargar los datos del perfil.';
-        console.error(err);
       }
     },
   };
@@ -258,7 +257,20 @@
   }
 
   .container-blog-name {
-    margin: 32px 0px;
+    margin: 10px 0px;
+  }
+
+  .input-container {
+    margin: 10px 0;
+
+    font-size: 0.7em;
+
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .buscador {
+    height: 1.9em;
   }
 
   hr {
@@ -323,6 +335,12 @@
 
     .is-visible .container {
       transform: translateX(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .input-container {
+      display: block;
     }
   }
 </style>
