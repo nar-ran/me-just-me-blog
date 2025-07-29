@@ -22,8 +22,12 @@
                 class="material-symbols-outlined favorite-icon"
                 :style="{
                   fontVariationSettings: post.hover
-                    ? (post.favorito ? `'FILL' 0` : `'FILL' 1`)
-                    : (post.favorito ? `'FILL' 1` : `'FILL' 0`),
+                    ? post.favorito
+                      ? `'FILL' 0`
+                      : `'FILL' 1`
+                    : post.favorito
+                      ? `'FILL' 1`
+                      : `'FILL' 0`,
                 }"
                 @mouseenter="post.hover = true"
                 @mouseleave="post.hover = false"
@@ -32,7 +36,15 @@
               </span>
               <span>|– {{ post.titulo }}</span>
             </span>
-            <span class="post-date">{{ formatDate(post.fecha) }}</span>
+            <span class="right-info">
+              <span class="post-date">{{ formatDate(post.fecha) }}</span>
+              <span
+                class="material-symbols-outlined delete-icon"
+                title="Eliminar post"
+                @click.stop.prevent="promptDelete(post, i)">
+                delete
+              </span>
+            </span>
           </div>
         </router-link>
       </div>
@@ -46,23 +58,41 @@
     v-if="errorCategory"
     :message="errorCategory"
     @close="errorCategory = ''" />
+
+  <ConfirmActionModal
+    v-if="showConfirmModal"
+    :message="confirmMessage"
+    @close="cancelDelete"
+    @confirm="confirmDelete" />
 </template>
 
 <script>
   import { supabase } from '@/stores/supabase';
   import ErrorMessagePopup from '../Utils/ErrorMessagePopup.vue';
+  import ConfirmActionModal from '../Utils/ConfirmActionModal.vue';
 
   export default {
     name: 'CategoryAccordion',
     components: {
       ErrorMessagePopup,
+      ConfirmActionModal,
     },
     data() {
       return {
         categories: [],
         openIndex: null,
         errorCategory: '',
+        showConfirmModal: false,
+        postToDelete: null,
       };
+    },
+    computed: {
+      confirmMessage() {
+        if (!this.postToDelete) {
+          return '';
+        }
+        return `¿Estás seguro de que quieres eliminar el post "${this.postToDelete.post.titulo}"?`;
+      },
     },
     methods: {
       toggle(i) {
@@ -140,6 +170,41 @@
           post.favorito = !post.favorito;
         } catch (err) {
           this.errorCategory = 'No se pudo actualizar el favorito.';
+        }
+      },
+      promptDelete(post, catIndex) {
+        this.postToDelete = { post, catIndex };
+        this.showConfirmModal = true;
+      },
+      cancelDelete() {
+        this.showConfirmModal = false;
+        this.postToDelete = null;
+      },
+      async confirmDelete() {
+        if (!this.postToDelete) return;
+
+        const { post, catIndex } = this.postToDelete;
+        try {
+          const { error, count } = await supabase
+            .from('entradas')
+            .delete({ count: 'exact' })
+            .eq('slug', post.slug);
+
+          if (error) throw error;
+
+          // Si count es 0, significa que ninguna fila coincidió o no se tuvo permiso para borrarla.
+          if (count === 0) {
+            throw new Error('No se pudo eliminar el post. Es posible que ya no exista o no tengas permisos.');
+          }
+
+          const category = this.categories[catIndex];
+          category.posts = category.posts.filter((p) => p.slug !== post.slug);
+          category.total = category.posts.length;
+        } catch (err) {
+          this.errorCategory =
+            err.message || 'Un error inesperado impidió eliminar el post.';
+        } finally {
+          this.cancelDelete();
         }
       },
     },
@@ -249,8 +314,30 @@
       transform 0.2s;
   }
 
+  .right-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
   .post-date {
     color: var(--text-color);
     font-family: var(--font-primary);
+  }
+
+  .delete-icon {
+    font-size: 0.9em;
+    cursor: pointer;
+    vertical-align: middle;
+
+  }
+
+  .delete-icon:hover {
+    opacity: 1;
+    transform: scale(1.2);
+
+    transition:
+      opacity 0.2s,
+      transform 0.2s;
   }
 </style>
