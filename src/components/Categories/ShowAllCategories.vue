@@ -142,19 +142,18 @@
             .from('categorias')
             .select(
               `
-            categoria_id,
-            nombre,
-            post_categorias (
-                entradas:post_id (
-                    titulo,
-                    fecha,
-                    favorito,
-                    slug,
-                    entrada_id
+                categoria_id,
+                nombre,
+                post_categorias (
+                    entradas:post_id (
+                        titulo,
+                        fecha,
+                        favorito,
+                        slug,
+                        entrada_id
+                    )
                 )
-            )
-
-`
+              `
             )
             .eq('usuario_id', user.id);
 
