@@ -1,13 +1,27 @@
 <template>
-  <div class="title-section"><p>Categorias</p></div>
+  <div class="title-section">
+    <p>Categorias</p>
+  </div>
+
   <div v-if="categories.length > 0" class="accordion">
     <div
       v-for="(cat, i) in categories"
       :key="cat.categoria_id"
       class="accordion-item">
       <button class="accordion-header" @click="toggle(i)">
-        {{ cat.nombre }} ({{ cat.total }})
-        <span class="arrow">{{ openIndex === i ? '▲' : '▼' }}</span>
+        <span>{{ cat.nombre }} ({{ cat.total }})</span>
+
+        <div class="header-icons">
+          <span class="arrow">{{ openIndex === i ? '▲' : '▼' }}</span>
+
+          <span
+            v-if="cat.nombre !== 'Sin Categoría'"
+            class="material-symbols-outlined delete-category-icon"
+            title="Eliminar categoría"
+            @click.stop="promptDeleteCategory(cat, i)">
+            delete_forever
+          </span>
+        </div>
       </button>
 
       <div v-show="openIndex === i" class="accordion-content">
@@ -34,14 +48,17 @@
                 @click.stop.prevent="toogleFavorite(post)">
                 favorite
               </span>
+
               <span>|– {{ post.titulo }}</span>
             </span>
+
             <span class="right-info">
               <span class="post-date">{{ formatDate(post.fecha) }}</span>
+
               <span
                 class="material-symbols-outlined delete-icon"
                 title="Eliminar post"
-                @click.stop.prevent="promptDelete(post, i)">
+                @click.stop.prevent="promptDeletePost(post, i)">
                 delete
               </span>
             </span>
@@ -50,6 +67,7 @@
       </div>
     </div>
   </div>
+
   <div v-else class="no-categories-message">
     <p>Aún no has creado ninguna categoría.</p>
   </div>
@@ -83,15 +101,21 @@
         openIndex: null,
         errorCategory: '',
         showConfirmModal: false,
-        postToDelete: null,
+        itemToDelete: null,
+        deleteType: null,
       };
     },
     computed: {
       confirmMessage() {
-        if (!this.postToDelete) {
-          return '';
+        if (!this.itemToDelete) return '';
+
+        if (this.deleteType === 'post') {
+          return `¿Estás seguro de que quieres eliminar el post "${this.itemToDelete.post.titulo}"?`;
+        } else if (this.deleteType === 'category') {
+          return `¿Estás seguro de que quieres eliminar la categoría "${this.itemToDelete.category.nombre}"? Todos los posts asociados a esta categoría se reasignarán a "Sin Categoría".`;
         }
-        return `¿Estás seguro de que quieres eliminar el post "${this.postToDelete.post.titulo}"?`;
+
+        return '';
       },
     },
     methods: {
@@ -121,14 +145,16 @@
             categoria_id,
             nombre,
             post_categorias (
-              entradas:post_id (
-                  titulo,
-                  fecha,
-                  favorito,
-                  slug
-              )
+                entradas:post_id (
+                    titulo,
+                    fecha,
+                    favorito,
+                    slug,
+                    entrada_id
+                )
             )
-          `
+
+`
             )
             .eq('usuario_id', user.id);
 
@@ -164,7 +190,6 @@
             .from('entradas')
             .update({ favorito: !post.favorito })
             .eq('slug', post.slug);
-
           if (error) throw error;
 
           post.favorito = !post.favorito;
@@ -172,42 +197,90 @@
           this.errorCategory = 'No se pudo actualizar el favorito.';
         }
       },
-      promptDelete(post, catIndex) {
-        this.postToDelete = { post, catIndex };
+
+      promptDeletePost(post, catIndex) {
+        this.itemToDelete = { pot, catIndex };
+        this.deleteType = 'post';
+        this.showConfirmModal = true;
+      },
+      promptDeleteCategory(category, catIndex) {
+        this.itemToDelete = { category, catIndex };
+        this.deleteType = 'category';
         this.showConfirmModal = true;
       },
       cancelDelete() {
         this.showConfirmModal = false;
-        this.postToDelete = null;
+        this.itemToDelete = null;
+        this.deleteType = null;
       },
+
       async confirmDelete() {
-        if (!this.postToDelete) return;
+        if (!this.itemToDelete) return;
 
-        const { post, catIndex } = this.postToDelete;
         try {
-          const { error, count } = await supabase
-            .from('entradas')
-            .delete({ count: 'exact' })
-            .eq('slug', post.slug);
-
-          if (error) throw error;
-
-          // Si count es 0, significa que ninguna fila coincidió o no se tuvo permiso para borrarla.
-          if (count === 0) {
-            throw new Error('No se pudo eliminar el post. Es posible que ya no exista o no tengas permisos.');
+          if (this.deleteType === 'post') {
+            await this.performDeletePost();
+          } else if (this.deleteType === 'category') {
+            await this.performDeleteCategory();
           }
-
-          const category = this.categories[catIndex];
-          category.posts = category.posts.filter((p) => p.slug !== post.slug);
-          category.total = category.posts.length;
         } catch (err) {
           this.errorCategory =
-            err.message || 'Un error inesperado impidió eliminar el post.';
+            err.message || 'Un error inesperado impidió la eliminación.';
         } finally {
           this.cancelDelete();
         }
       },
+
+      async performDeletePost() {
+        const { post, catIndex } = this.itemToDelete;
+        const { error, count } = await supabase
+          .from('entradas')
+          .delete({ count: 'exact' })
+          .eq('slug', post.slug);
+        if (error) throw error;
+        if (count === 0) {
+          throw new Error(
+            'No se pudo eliminar el post. Es posible que ya no exista o no tengas permisos.'
+          );
+        }
+
+        const category = this.categories[catIndex];
+        category.posts = category.posts.filter((p) => p.slug !== post.slug);
+        category.total = category.posts.length;
+      },
+
+      async performDeleteCategory() {
+        const { category, catIndex } = this.itemToDelete;
+        const {
+          data: { user },
+          error: userError,
+        } = await supabase.auth.getUser();
+
+        if (userError || !user) {
+          throw new Error('Usuario no autenticado. Por favor, inicia sesión.');
+        }
+
+        const { error } = await supabase.rpc('delete_category_with_reassign', {
+          category_to_delete_id: category.categoria_id,
+          user_id_param: user.id,
+        });
+
+        if (error) {
+          throw new Error(error.message);
+        }
+
+        this.categories.splice(catIndex, 1);
+
+        if (this.openIndex === catIndex) {
+          this.openIndex = null;
+        }
+
+        if (this.openIndex !== null && catIndex < this.openIndex) {
+          this.openIndex--;
+        }
+      },
     },
+
     mounted() {
       this.fetchCategories();
     },
@@ -270,9 +343,26 @@
     padding: 12px 20px;
   }
 
+  .header-icons {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
   .arrow {
-    margin-left: 10px;
     font-size: 0.8em;
+  }
+
+  .delete-category-icon {
+    font-size: 1.1em;
+
+    transition: all 0.2s ease;
+  }
+
+  .delete-category-icon:hover {
+    opacity: 1;
+    text-shadow: 0 0 10px var(--text-color);
+    transform: scale(1.2);
   }
 
   .post-link {
@@ -329,7 +419,6 @@
     font-size: 0.9em;
     cursor: pointer;
     vertical-align: middle;
-
   }
 
   .delete-icon:hover {
