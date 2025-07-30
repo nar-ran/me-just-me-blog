@@ -199,7 +199,7 @@
       },
 
       promptDeletePost(post, catIndex) {
-        this.itemToDelete = { pot, catIndex };
+        this.itemToDelete = { post, catIndex };
         this.deleteType = 'post';
         this.showConfirmModal = true;
       },
