@@ -24,47 +24,49 @@
         </div>
       </button>
 
-      <div v-show="openIndex === i" class="accordion-content">
-        <router-link
-          v-for="post in cat.posts"
-          :key="post.slug"
-          :to="{ name: 'post-detail', params: { slug: post.slug } }"
-          class="post-link">
-          <div class="post-row">
-            <span class="left-info">
-              <span
-                class="material-symbols-outlined favorite-icon"
-                :style="{
-                  fontVariationSettings: post.hover
-                    ? post.favorito
-                      ? `'FILL' 0`
-                      : `'FILL' 1`
-                    : post.favorito
-                      ? `'FILL' 1`
-                      : `'FILL' 0`,
-                }"
-                @mouseenter="post.hover = true"
-                @mouseleave="post.hover = false"
-                @click.stop.prevent="toogleFavorite(post)">
-                favorite
+      <Transition name="height-transition">
+        <div v-if="openIndex === i" class="accordion-content">
+          <router-link
+            v-for="post in cat.posts"
+            :key="post.slug"
+            :to="{ name: 'post-detail', params: { slug: post.slug } }"
+            class="post-link">
+            <div class="post-row">
+              <span class="left-info">
+                <span
+                  class="material-symbols-outlined favorite-icon"
+                  :style="{
+                    fontVariationSettings: post.hover
+                      ? post.favorito
+                        ? `'FILL' 0`
+                        : `'FILL' 1`
+                      : post.favorito
+                        ? `'FILL' 1`
+                        : `'FILL' 0`,
+                  }"
+                  @mouseenter="post.hover = true"
+                  @mouseleave="post.hover = false"
+                  @click.stop.prevent="toogleFavorite(post)">
+                  favorite
+                </span>
+
+                <span>|– {{ post.titulo }}</span>
               </span>
 
-              <span>|– {{ post.titulo }}</span>
-            </span>
+              <span class="right-info">
+                <span class="post-date">{{ formatDate(post.fecha) }}</span>
 
-            <span class="right-info">
-              <span class="post-date">{{ formatDate(post.fecha) }}</span>
-
-              <span
-                class="material-symbols-outlined delete-icon"
-                title="Eliminar post"
-                @click.stop.prevent="promptDeletePost(post, i)">
-                delete
+                <span
+                  class="material-symbols-outlined delete-icon"
+                  title="Eliminar post"
+                  @click.stop.prevent="promptDeletePost(post, i)">
+                  delete
+                </span>
               </span>
-            </span>
-          </div>
-        </router-link>
-      </div>
+            </div>
+          </router-link>
+        </div>
+      </Transition>
     </div>
   </div>
 
@@ -98,7 +100,7 @@
     data() {
       return {
         categories: [],
-        openIndex: null,
+        openIndex: 0,
         errorCategory: '',
         showConfirmModal: false,
         itemToDelete: null,
@@ -342,6 +344,31 @@
     padding: 12px 20px;
   }
 
+  /* Transiciones para el acordeón */
+  .height-transition-enter-active,
+  .height-transition-leave-active {
+    transition:
+      max-height 0.3s ease-in-out,
+      padding 0.3s ease-in-out;
+    overflow: hidden;
+  }
+
+  .height-transition-enter-from,
+  .height-transition-leave-to {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0;
+  }
+
+  .height-transition-enter-to,
+  .height-transition-leave-from {
+    max-height: 500px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    opacity: 1;
+  }
+
   .header-icons {
     display: flex;
     align-items: center;
@@ -421,7 +448,20 @@
   }
 
   .delete-icon:hover {
-    opacity: 1;
+    transform: scale(1.2);
+
+    transition:
+      opacity 0.2s,
+      transform 0.2s;
+  }
+
+  .edit-icon {
+    font-size: 0.9em;
+    cursor: pointer;
+    vertical-align: middle;
+  }
+
+  .edit-icon:hover {
     transform: scale(1.2);
 
     transition:
