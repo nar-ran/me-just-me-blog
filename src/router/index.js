@@ -1,75 +1,73 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { supabase } from '@/stores/supabase';
 
-import HomeView from '@/views/HomeView.vue';
-import LoginView from '@/views/LoginView.vue';
-import PostDeatilView from '@/views/PostDeatilView.vue';
-import NotFoundView from '@/views/NotFoundView.vue';
-import CreatePostView from '@/views/CreatePostView.vue';
-import CategoriesView from '@/views/CategoriesView.vue';
-import FavoritesView from '@/views/FavoritesView.vue';
-import SearchView from '@/views/SearchView.vue';
-
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView,
+    component: () => import('@/views/HomeView.vue'),
     meta: { requiresAuth: true, title: 'Inicio' },
   },
   {
     path: '/login',
     name: 'login',
-    component: LoginView,
+    component: () => import('@/views/LoginView.vue'),
     meta: { title: 'Iniciar Sesión' },
-  },
-  {
-    path: '/post/:slug',
-    name: 'post-detail',
-    component: PostDeatilView,
-    props: true,
-    meta: { requiresAuth: true, title: 'Detalle del post' },
   },
   {
     path: '/create-post',
     name: 'create-post',
-    component: CreatePostView,
+    component: () => import('@/views/CreatePostView.vue'),
     meta: { requiresAuth: true, title: 'Crear Entrada' },
   },
   {
-    path: '/categories/',
+    path: '/post/:slug',
+    name: 'post-detail',
+    component: () => import('@/views/PostDeatilView.vue'),
+    props: true,
+    meta: { requiresAuth: true, title: 'Detalle del post' },
+  },
+  {
+    path: '/edit-post/:slug',
+    name: 'edit-post',
+    component: () => import('@/views/ModifyPostView.vue'),
+    props: true,
+    meta: { requiresAuth: true, title: 'Editar Entrada' },
+  },
+  {
+    path: '/categories',
     name: 'categories',
-    component: CategoriesView,
+    component: () => import('@/views/CategoriesView.vue'),
     props: true,
     meta: { requiresAuth: true, title: 'Categorias' },
   },
   {
     path: '/favorites',
     name: 'favorites',
-    component: FavoritesView,
+    component: () => import('@/views/FavoritesView.vue'),
     meta: { requiresAuth: true, title: 'Favoritos' },
   },
   {
     path: '/search',
     name: 'search',
-    component: SearchView,
+    component: () => import('@/views/SearchView.vue'),
     props: (route) => ({ query: route.query.q || '' }),
     meta: { requiresAuth: true, title: 'Resultados de búsqueda' },
   },
   {
     path: '/:catchAll(.*)',
     name: 'not-found',
-    component: NotFoundView,
+    component: () => import('@/views/NotFoundView.vue'),
     meta: { title: '404 - Página no encontrada' },
   },
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL), // Modo historial para URLs limpias
+  history: createWebHistory(process.env.BASE_URL),
   routes,
 });
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, _, next) => {
   const { data } = await supabase.auth.getSession();
   const isAuthenticated = !!data.session;
 

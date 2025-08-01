@@ -62,6 +62,13 @@
                   @click.stop.prevent="promptDeletePost(post, i)">
                   delete
                 </span>
+
+                <span
+                  class="material-symbols-outlined edit-icon"
+                  title="Editar post"
+                  @click.stop.prevent="goToEditPost(post)">
+                  edit_note
+                </span>
               </span>
             </div>
           </router-link>
@@ -199,6 +206,13 @@
         }
       },
 
+      goToEditPost(post) {
+        this.$router.push({
+          name: 'edit-post',
+          params: { slug: post.slug },
+        });
+      },
+
       promptDeletePost(post, catIndex) {
         this.itemToDelete = { post, catIndex };
         this.deleteType = 'post';
@@ -305,6 +319,7 @@
   .accordion {
     display: flex;
     flex-direction: column;
+    margin: 0 2em;
   }
 
   .accordion-item {
