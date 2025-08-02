@@ -33,6 +33,13 @@
         v-model="title" />
       <button
         type="button"
+        class="btn-cancel"
+        @click="cancelEdit"
+        :disabled="isSubmitting">
+        Cancelar
+      </button>
+      <button
+        type="button"
         class="btn-save"
         @click="updateContent"
         :disabled="isSubmitting">
@@ -253,6 +260,10 @@
         }
       };
 
+      const cancelEdit = () => {
+        router.back();
+      };
+
       onMounted(async () => {
         await fetchPostData();
         // Después de que los datos se obtienen, `loading` se vuelve falso.
@@ -273,6 +284,7 @@
         categorySelected,
         updateContent,
         isSubmitting,
+        cancelEdit,
       };
     },
   };
@@ -413,6 +425,29 @@
     box-sizing: border-box;
     cursor: pointer;
     white-space: nowrap;
+  }
+
+  .btn-save:hover {
+    filter: brightness(1.2);
+  }
+
+  .btn-cancel {
+    font-size: 1.5em;
+    color: var(--primary-color);
+    font-family: var(--font-primary);
+    background-color: transparent;
+    border: 1px solid var(--primary-color);
+    padding: 10px 50px;
+    border-radius: 60px;
+    box-sizing: border-box;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+  }
+
+  .btn-cancel:hover{
+    color: var(--text-color);
+    background-color: var(--primary-color);
   }
 
   /* Quill editor */
