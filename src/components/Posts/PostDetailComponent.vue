@@ -70,19 +70,29 @@
           return;
         }
 
+        const { data: userData } = await supabase.auth.getUser();
+        const userId = userData?.user?.id;
+
+        if (!userId) {
+          this.error = 'No has iniciado sesión.';
+          this.loading = false;
+          return;
+        }
+
         try {
           const { data, error } = await supabase
             .from('entradas')
             .select(
               `
-        titulo,
-        contenido,
-        fecha,
-        usuarios ( usuario ),
-        post_categorias ( categorias ( nombre, slug ) )
-      `
+                titulo,
+                contenido,
+                fecha,
+                usuarios ( usuario ),
+                post_categorias ( categorias ( nombre, slug ) )
+              `
             )
             .eq('slug', slug)
+            .eq('usuario_id', userId)
             .single();
 
           if (error) throw error;
