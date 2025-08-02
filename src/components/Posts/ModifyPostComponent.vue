@@ -131,6 +131,16 @@
           return;
         }
 
+        const { data: userData } = await supabase.auth.getUser();
+        const userId = userData?.user?.id;
+
+        if (!userId) {
+          error.value = 'No has iniciado sesión.';
+          loading.value = false;
+          router.push({ name: 'home' });
+          return;
+        }
+
         try {
           const { data: postData, error: postError } = await supabase
             .from('entradas')
@@ -149,6 +159,7 @@
             `
             )
             .eq('slug', slug)
+            .eq('usuario_id', userId)
             .single();
 
           if (postError) throw postError;
@@ -178,7 +189,7 @@
         } catch (err) {
           if (err.code === 'PGRST116') {
             error.value = 'La entrada solicitada no fue encontrada.';
-            router.replace({ name: 'not-found' });
+            router.replace('/not-found');
           } else {
             error.value = `Error al cargar la entrada: ${
               err.message || 'Error desconocido'
@@ -266,8 +277,6 @@
 
       onMounted(async () => {
         await fetchPostData();
-        // Después de que los datos se obtienen, `loading` se vuelve falso.
-        // Usamos nextTick para asegurarnos de que el DOM se haya actualizado y el div #editor exista.
         nextTick(() => {
           initializeQuill();
           quillEditor.value.root.innerHTML = postContent.value;
@@ -445,7 +454,7 @@
     transition: all 0.2s ease;
   }
 
-  .btn-cancel:hover{
+  .btn-cancel:hover {
     color: var(--text-color);
     background-color: var(--primary-color);
   }
