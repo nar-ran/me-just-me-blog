@@ -1,40 +1,38 @@
 <template>
-  <div class="container">
-    <div class="title-section"><p>Favoritos</p></div>
+  <div class="title-section"><p>Favoritos</p></div>
 
-    <div v-if="posts.length > 0">
-      <router-link
-        v-for="post in posts"
-        :key="post.entrada_id"
-        :to="{ name: 'post-detail', params: { slug: post.slug } }"
-        class="post-link">
-        <div class="post-card">
-          <div class="post-header">
-            <span>{{ post.titulo }}</span>
+  <div v-if="posts.length > 0">
+    <router-link
+      v-for="post in posts"
+      :key="post.entrada_id"
+      :to="{ name: 'post-detail', params: { slug: post.slug } }"
+      class="post-link">
+      <div class="post-card">
+        <div class="post-header">
+          <span>{{ post.titulo }}</span>
 
-            <span class="right-info">
-              <span class="post-date">{{ formatDate(post.fecha) }}</span>
+          <span class="right-info">
+            <span class="post-date">{{ formatDate(post.fecha) }}</span>
 
-              <span
-                class="material-symbols-outlined favorite-icon"
-                @click.stop.prevent="removeFavorite(post.entrada_id)">
-                favorite
-              </span>
+            <span
+              class="material-symbols-outlined favorite-icon"
+              @click.stop.prevent="removeFavorite(post.entrada_id)">
+              favorite
             </span>
-          </div>
-
-          <p class="post-content multiline-ellipsis">
-            {{ getPlainText(post.contenido) }}
-          </p>
+          </span>
         </div>
-      </router-link>
-    </div>
-    <div v-else class="no-favorites-message">
-      <p>Aún no has añadido ninguna entrada a favoritos.</p>
-    </div>
 
-    <ErrorMessagePopup v-if="error" :message="error" @close="error = ''" />
+        <p class="post-content multiline-ellipsis">
+          {{ getPlainText(post.contenido) }}
+        </p>
+      </div>
+    </router-link>
   </div>
+  <div v-else class="no-favorites-message">
+    <p>Aún no has añadido ninguna entrada a favoritos.</p>
+  </div>
+
+  <ErrorMessagePopup v-if="error" :message="error" @close="error = ''" />
 </template>
 
 <script>
@@ -110,8 +108,6 @@
 
 <style scoped>
   .container {
-    padding: 40px 20px;
-    margin: 0 auto;
     width: 100%;
   }
 

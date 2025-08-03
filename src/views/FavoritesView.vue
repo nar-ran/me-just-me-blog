@@ -16,3 +16,9 @@
     },
   };
 </script>
+
+<style scoped>
+  .container{
+    margin: 30px;
+  }
+</style>
