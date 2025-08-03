@@ -5,26 +5,7 @@
     </div>
 
     <div class="bottom-grid">
-      <div class="main-categories-container">
-        <component
-          :is="categories.length > 0 ? 'router-link' : 'div'"
-          :to="categories.length > 0 ? '/categories' : null"
-          class="categories-link">
-          <p class="title">Categorías</p>
-          <div v-if="categories.length > 0">
-            <div
-              v-for="category in categories"
-              :key="category.id"
-              class="categories-container">
-              <p class="category-name">{{ category.nombre }}</p>
-              <p class="category-post-count">{{ category.postCount }}</p>
-            </div>
-          </div>
-          <div v-else class="no-categories-message">
-            <p>Aún no has creado categorías.</p>
-          </div>
-        </component>
-      </div>
+      <CategoriesSection />
 
       <div class="main-categories-container">
         <div class="music-container">
@@ -88,6 +69,7 @@
   import axios from 'axios';
   import { supabase } from '@/stores/supabase';
   import PostsSectionComponent from '@/components/MainContentArea/PostsSection.vue';
+  import CategoriesSection from './CategoriesSection.vue';
 
   const CLIENT_ID = process.env.VUE_APP_SPOTIFY_CLIENT_ID;
   const CLIENT_SECRET = process.env.VUE_APP_SPOTIFY_CLIENT_SECRET;
@@ -98,6 +80,7 @@
     name: 'MainContentComponent',
     components: {
       PostsSectionComponent,
+      CategoriesSection,
     },
     data() {
       return {
