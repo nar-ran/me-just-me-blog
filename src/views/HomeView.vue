@@ -7,7 +7,9 @@
     <div v-if="isSidebarVisible" class="overlay" @click="toggleSidebar"></div>
 
     <div class="sections">
-      <div :class="{ 'is-visible': isSidebarVisible }">
+      <div
+        :class="{ 'is-visible': isSidebarVisible }"
+        class="sidebar-container">
         <sidebar-nav-component
           class="navbar"
           @openCreateCategory="showCreateCategory = true" />
@@ -52,19 +54,21 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
   }
 
   .sections {
     padding: 2em;
-
     display: grid;
+
     grid-template-columns: auto 2fr;
-    grid-template-rows: 1fr;
-
-    box-sizing: border-box;
-
     gap: 2em;
 
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  .sidebar-container {
     height: 100%;
   }
 
@@ -98,9 +102,10 @@
     }
 
     .sections {
-      display: block;
+      grid-template-columns: 1fr;
       padding: 20px;
       width: 100%;
+      overflow-y: auto;
     }
   }
 </style>

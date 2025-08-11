@@ -6,6 +6,7 @@
         :src="profileImage"
         ref="profileImage"
         alt="Imagen de perfil" />
+
       <input
         type="file"
         ref="fileInput"

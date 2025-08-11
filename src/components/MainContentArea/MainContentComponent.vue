@@ -53,6 +53,7 @@
       var(--primary-color),
       var(--secondary-color)
     );
+    overflow-y: auto;
   }
 
   .top-grid {
