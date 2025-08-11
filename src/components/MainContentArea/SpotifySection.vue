@@ -319,4 +319,25 @@
     font-style: italic;
     opacity: 0.8;
   }
+
+  @media (max-width: 980px) {
+    .spotify-track-display {
+      flex-direction: row;
+      align-items: center;
+      max-width: none;
+      padding: 10px;
+      gap: 1em;
+    }
+
+    .spotify-album-cover {
+      width: 60px;
+      height: 60px;
+      flex-shrink: 0;
+    }
+
+    .spotify-track-info {
+      flex-grow: 1;
+      margin-top: 0;
+    }
+  }
 </style>
