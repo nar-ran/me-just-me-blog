@@ -1,8 +1,8 @@
 <template>
   <p class="title">Entradas</p>
-  <div v-if="posts.length > 0" class="main-posts-container">
+  <div v-if="paginatedPosts.length > 0" class="main-posts-container">
     <router-link
-      v-for="post in posts"
+      v-for="post in paginatedPosts"
       :key="post.entrada_id"
       :to="{ name: 'post-detail', params: { slug: post.slug } }"
       class="posts-container post-link">
@@ -13,6 +13,15 @@
   <div v-else class="no-posts-message">
     <p>Aún no hay entradas para mostrar. ¡Anímate a crear la primera!</p>
   </div>
+
+  <!-- Controles de paginación -->
+  <div v-if="totalPages > 1" class="pagination">
+    <button @click="prevPage" :disabled="currentPage === 1">Anterior</button>
+    <span>Página {{ currentPage }} de {{ totalPages }}</span>
+    <button @click="nextPage" :disabled="currentPage === totalPages">
+      Siguiente
+    </button>
+  </div>
 </template>
 
 <script>
@@ -20,12 +29,22 @@
 
   export default {
     name: 'PostsSectionComponent',
-
     data() {
       return {
         posts: [],
+        currentPage: 1,
+        perPage: 7,
         error: null,
       };
+    },
+    computed: {
+      totalPages() {
+        return Math.ceil(this.posts.length / this.perPage);
+      },
+      paginatedPosts() {
+        const start = (this.currentPage - 1) * this.perPage;
+        return this.posts.slice(start, start + this.perPage);
+      },
     },
     async mounted() {
       try {
@@ -61,6 +80,16 @@
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const year = String(date.getFullYear()).slice(2);
         return `${day}${month}${year}`;
+      },
+      nextPage() {
+        if (this.currentPage < this.totalPages) {
+          this.currentPage++;
+        }
+      },
+      prevPage() {
+        if (this.currentPage > 1) {
+          this.currentPage--;
+        }
       },
     },
   };
@@ -143,5 +172,28 @@
     );
 
     border-radius: 100px;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+    margin-top: 1em;
+  }
+
+  .pagination button {
+    font-family: var(--primary-font);
+    background: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    padding: 0.5em 1em;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 </style>
