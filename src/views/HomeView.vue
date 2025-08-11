@@ -75,7 +75,6 @@
   .overlay {
     position: fixed;
     inset: 0;
-    background-color: rgba(0, 0, 0, 0.5); /* Un poco más oscuro para mejor visibilidad */
     z-index: 900;
   }
 

@@ -41,11 +41,10 @@
 <style scoped>
   .main-grid-container {
     display: grid;
-    grid-template-rows: 2fr 1fr;
+    grid-template-rows: 2fr auto;
     box-sizing: border-box;
     gap: 2rem;
-    height: 100%;
-    min-height: 0;
+    height: auto;
     padding: 3.5em;
     border-radius: 15px;
     color: var(--text-color);
@@ -57,10 +56,7 @@
   }
 
   .top-grid {
-    min-height: 0;
-    height: 100%;
-    display: grid;
-    grid-template-rows: auto 1fr;
+    display: block;
   }
 
   .bottom-grid {
@@ -68,7 +64,7 @@
     grid-template-columns: 1fr auto;
     gap: 2rem;
   }
-  
+
   ::-webkit-scrollbar {
     width: 0.17em;
     height: 0.17em;
