@@ -14,10 +14,11 @@
 - **Gestión de Posts:**
   - Creación de nuevas entradas a través de un editor de texto enriquecido.
   - Visualización de todos los posts en la página principal, ordenados cronológicamente.
+  - Eliminación de posts desde la pagina de Categorias.
 - **Gestión de Categorías:**
   - Creación de categorías para organizar los posts.
-  - Selección de múltiples categorías al crear un post.
   - Navegación a través de las categorías.
+  - Marcar posts como favoritos directamente desde la lista de categorías.
 - **Página de Favoritos:** Una sección dedicada para visualizar los posts marcados como favoritos.
 - **Integración con Spotify:** Muestra en la barra lateral la última canción que el autor ha reproducido en Spotify, incluyendo carátula, nombre de la canción y artista.
 - **Diseño Responsivo:** La interfaz se adapta fluidamente a diferentes tamaños de pantalla, desde dispositivos móviles hasta ordenadores de escritorio.
