@@ -1,6 +1,4 @@
-# Me, Just Me - Blog Personal ![Estado](https://img.shields.io/badge/Estado-En%20construcción-yellow)
-
-⚠️ **Aviso importante**: Este proyecto está en desarrollo activo. La estructura y funcionalidades pueden cambiar.
+# Me, Just Me - Blog Personal ![Estado](https://img.shields.io/badge/Estado-Finalizado-green)
 
 ![Vue.js](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vue.js&logoColor=4FC08D) ![Vue CLI](https://img.shields.io/badge/Vue%20CLI-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white) ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white) ![Pinia](https://img.shields.io/badge/Pinia-FFD600?style=for-the-badge&logo=pinia&logoColor=black)
 
@@ -16,10 +14,11 @@
 - **Gestión de Posts:**
   - Creación de nuevas entradas a través de un editor de texto enriquecido.
   - Visualización de todos los posts en la página principal, ordenados cronológicamente.
+  - Eliminación de posts desde la pagina de Categorias.
 - **Gestión de Categorías:**
   - Creación de categorías para organizar los posts.
-  - Selección de múltiples categorías al crear un post.
   - Navegación a través de las categorías.
+  - Marcar posts como favoritos directamente desde la lista de categorías.
 - **Página de Favoritos:** Una sección dedicada para visualizar los posts marcados como favoritos.
 - **Integración con Spotify:** Muestra en la barra lateral la última canción que el autor ha reproducido en Spotify, incluyendo carátula, nombre de la canción y artista.
 - **Diseño Responsivo:** La interfaz se adapta fluidamente a diferentes tamaños de pantalla, desde dispositivos móviles hasta ordenadores de escritorio.
