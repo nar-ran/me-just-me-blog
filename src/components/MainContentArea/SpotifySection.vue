@@ -339,5 +339,12 @@
       flex-grow: 1;
       margin-top: 0;
     }
+
+    .spotify-track-name,
+    .spotify-artist-name {
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
+    }
   }
 </style>

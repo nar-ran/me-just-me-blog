@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h1>¿Te perdiste?<br />Página no encontrada</h1>
-    <a href="/"> Volver al inicio </a>
+    <router-link to="/"> Volver al inicio </router-link>
   </div>
 </template>
 

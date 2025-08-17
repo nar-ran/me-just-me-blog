@@ -26,12 +26,12 @@
     <hr />
 
     <div class="options">
-      <a href="/create-post/">
+      <router-link to="/create-post">
         <p>
           Crear Entrada
           <span class="material-symbols-outlined"> contextual_token_add </span>
         </p>
-      </a>
+      </router-link>
       <div>
         <p @click="$emit('openCreateCategory')">
           Crear Categoría
@@ -40,12 +40,12 @@
           >
         </p>
       </div>
-      <a href="/favorites/">
+      <router-link to="/favorites">
         <p>
           Favoritos
           <span class="material-symbols-outlined"> favorite </span>
         </p>
-      </a>
+      </router-link>
 
       <hr />
       <a @click="handleLogout">

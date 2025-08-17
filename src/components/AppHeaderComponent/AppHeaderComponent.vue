@@ -1,15 +1,17 @@
 <template>
   <header>
-    <a href="/">
+    <router-link to="/">
       <p class="name-blog">Me, Just Me</p>
-    </a>
+    </router-link>
     <SearchbarComponent />
 
     <div class="icons">
-      <a href="/"><span class="material-symbols-outlined">home</span></a>
-      <a href="#" @click="handleLogout"
-        ><span class="material-symbols-outlined">chip_extraction</span></a
-      >
+      <router-link to="/">
+        <span class="material-symbols-outlined">home</span>
+      </router-link>
+      <a href="#" @click="handleLogout">
+        <span class="material-symbols-outlined">chip_extraction</span>
+      </a>
     </div>
   </header>
 </template>
