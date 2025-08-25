@@ -1,6 +1,9 @@
 # Me, Just Me - Blog Personal ![Estado](https://img.shields.io/badge/Estado-Finalizado-green)
 
-![Vue.js](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vue.js&logoColor=4FC08D) ![Vue CLI](https://img.shields.io/badge/Vue%20CLI-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white) ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white) ![Pinia](https://img.shields.io/badge/Pinia-FFD600?style=for-the-badge&logo=pinia&logoColor=black)
+![Vue.js](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vue.js&logoColor=4FC08D) 
+![Vue CLI](https://img.shields.io/badge/Vue_CLI-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white) 
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white) 
+![Pinia](https://img.shields.io/badge/Pinia-FFD600?style=for-the-badge&logo=pinia&logoColor=black)
 
 ## 🌐 [Ver Demo en Vivo →](https://me-just-me-blog.vercel.app/) | ✨ [Ver Diseño en Figma →](https://www.figma.com/design/tGnC8FBQ7rmxK1K7QxTOao/Me--Just-Me-Blog?node-id=0-1&t=5RFm1LIO2Jngb79w-1)
 
