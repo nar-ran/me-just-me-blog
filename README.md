@@ -7,7 +7,7 @@
 
 ## 🌐 [Ver Demo en Vivo →](https://me-just-me-blog.vercel.app/) | ✨ [Ver Diseño en Figma →](https://www.figma.com/design/tGnC8FBQ7rmxK1K7QxTOao/Me--Just-Me-Blog?node-id=0-1&t=5RFm1LIO2Jngb79w-1)
 
-"Me, Just Me" es una plataforma de blog personal desarrollada con Vue.js 3 (Composition API). Permite a los usuarios autenticarse para crear y gestionar sus propias entradas, organizarlas por categorías y mucho más. El proyecto destaca por su diseño limpio, su interfaz responsiva y una integración con la API de Spotify para mostrar la música que el autor ha escuchado recientemente.
+"Me, Just Me" es una plataforma de blog personal desarrollada con Vue.js 3 (Options API). Permite a los usuarios autenticarse para crear y gestionar sus propias entradas, organizarlas por categorías y mucho más. El proyecto destaca por su diseño limpio, su interfaz responsiva y una integración con la API de Spotify para mostrar la música que el autor ha escuchado recientemente.
 
 > **Nota Importante:** Este proyecto está concebido como un blog personal para un **único usuario**. El registro de nuevas cuentas no está habilitado desde la interfaz web; el usuario debe ser creado directamente en la base de datos de Supabase.
 
@@ -31,7 +31,7 @@
 
 ### Frontend
 
-- **Framework:** [Vue.js 3](https://vuejs.org/) (Composition API)
+- **Framework:** [Vue.js 3](https://vuejs.org/) (Options API)
 - **Enrutamiento:** [Vue Router](https://router.vuejs.org/)
 - **Gestión de Estado:** [Pinia](https://pinia.vuejs.org/)
 - **Bundler:** [Vue CLI](https://cli.vuejs.org/)
