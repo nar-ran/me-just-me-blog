@@ -23,6 +23,14 @@
         </div>
 
         <span class="post-date">{{ formatDate(post.fecha) }}</span>
+
+        <span
+          class="post-edit"
+          title="Editar post"
+          @click.stop.prevent="goToEditPost(post)">
+          Modificar
+          <span class="material-symbols-outlined edit-icon"> edit </span>
+        </span>
       </div>
     </header>
 
@@ -89,7 +97,7 @@
                 fecha,
                 usuarios ( usuario ),
                 post_categorias ( categorias ( nombre, slug ) )
-              `
+              `,
             )
             .eq('slug', slug)
             .eq('usuario_id', userId)
@@ -108,6 +116,13 @@
         } finally {
           this.loading = false;
         }
+      },
+
+      goToEditPost(post) {
+        this.$router.push({
+          name: 'edit-post',
+          params: { slug: post.slug },
+        });
       },
 
       formatDate(dateStr) {
@@ -208,6 +223,34 @@
     text-align: center;
     padding: 3em;
     font-size: 1.2em;
+  }
+
+  .post-edit {
+    display: flex;
+    gap: 0.5em;
+    flex-wrap: wrap;
+
+    padding: 0.3em 0.8em;
+    border-radius: 15px;
+    font-size: 0.9em;
+    opacity: 0.9;
+
+    background-color: var(--primary-color);
+  }
+
+  .edit-icon {
+    font-size: 0.9em;
+    cursor: pointer;
+    vertical-align: middle;
+  }
+
+  .post-edit:hover {
+    cursor: pointer;
+    transform: scale(1.2);
+
+    transition:
+      opacity 0.2s,
+      transform 0.2s;
   }
 
   @media (max-width: 420px) {
