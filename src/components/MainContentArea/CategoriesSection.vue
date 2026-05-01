@@ -65,6 +65,10 @@
     background-repeat: no-repeat;
   }
 
+  .main-categories-container:hover {
+    text-shadow: 0 0 20px var(--text-color);
+  }
+
   .categories-link {
     text-decoration: none;
     color: var(--text-color);
